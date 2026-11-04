@@ -82,6 +82,7 @@ class MemeRitualBattle {
 
     renderBattlefield() {
         const tagsContainer = document.getElementById('battlefieldTags');
+        const contextElement = document.getElementById('battlefieldContext');
         tagsContainer.innerHTML = '';
         
         const nameDiv = document.createElement('div');
@@ -95,6 +96,20 @@ class MemeRitualBattle {
             tagEl.textContent = `#${tag}`;
             tagsContainer.appendChild(tagEl);
         });
+        
+        // 戦場背景画像を設定
+        if (this.battlefield.backgroundImage) {
+            contextElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('${this.battlefield.backgroundImage}')`;
+            contextElement.style.backgroundSize = 'cover';
+            contextElement.style.backgroundPosition = 'center';
+            
+            // 画像読み込みエラー時のフォールバック
+            const img = new Image();
+            img.onerror = () => {
+                contextElement.style.backgroundImage = 'linear-gradient(135deg, rgba(255, 170, 0, 0.25) 0%, rgba(255, 100, 0, 0.25) 100%)';
+            };
+            img.src = this.battlefield.backgroundImage;
+        }
     }
 
     renderMemeSelector() {
@@ -112,6 +127,20 @@ class MemeRitualBattle {
             
             // loreの1行要約（最初の1文）
             const loreSummary = meme.lore.split('。')[0] + '。';
+            
+            // カード背景画像を設定
+            if (meme.themeImage) {
+                card.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.75)), url('${meme.themeImage}')`;
+                card.style.backgroundSize = 'cover';
+                card.style.backgroundPosition = 'center';
+                
+                // 画像読み込みエラー時のフォールバック
+                const img = new Image();
+                img.onerror = () => {
+                    card.style.backgroundImage = `linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, ${meme.themeColor || '#00ff88'}33 100%)`;
+                };
+                img.src = meme.themeImage;
+            }
             
             card.innerHTML = `
                 <h4>${meme.displayName} ${meme.avatar}</h4>
@@ -215,6 +244,21 @@ class MemeRitualBattle {
         
         // オーバーレイ表示
         overlay.classList.add('active');
+        
+        // 儀式背景画像を設定
+        if (this.playerMeme.themeImage) {
+            overlay.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('${this.playerMeme.themeImage}')`;
+            overlay.style.backgroundSize = 'cover';
+            overlay.style.backgroundPosition = 'center';
+            
+            // 画像読み込みエラー時のフォールバック
+            const img = new Image();
+            img.onerror = () => {
+                overlay.style.backgroundImage = 'rgba(0, 0, 0, 0.95)';
+            };
+            img.src = this.playerMeme.themeImage;
+        }
+        
         avatar.textContent = this.playerMeme.avatar;
         catchphrase.textContent = this.playerMeme.catchphrase;
         lore.textContent = this.playerMeme.lore;

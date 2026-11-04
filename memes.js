@@ -25,7 +25,9 @@ const MEME_DATABASE = {
             name: '語録テンプレ',
             description: '攻撃成功時、語録の汎用性で鮮度+3回復',
             type: 'on_attack_success'
-        }
+        },
+        themeColor: '#ff6b35',
+        themeImage: 'https://picsum.photos/seed/yaju-fire/800/600?blur=2'
     },
     
     nullpo: {
@@ -51,7 +53,9 @@ const MEME_DATABASE = {
             name: '即応',
             description: 'フェイント成功時に反撃ダメージ+8',
             type: 'on_feint_success'
-        }
+        },
+        themeColor: '#ffd700',
+        themeImage: 'https://picsum.photos/seed/nullpo-lightning/800/600?blur=2'
     },
 
     buront: {
@@ -77,7 +81,9 @@ const MEME_DATABASE = {
             name: 'ナイト様',
             description: 'チャージ完了攻撃の倍率1.5倍→2.0倍',
             type: 'charge_boost'
-        }
+        },
+        themeColor: '#4169e1',
+        themeImage: 'https://picsum.photos/seed/buront-knight/800/600?blur=2'
     },
 
     hattoushin: {
@@ -103,7 +109,9 @@ const MEME_DATABASE = {
             name: '不気味',
             description: '攻撃時、相手の鮮度を追加-3',
             type: 'freshness_drain'
-        }
+        },
+        themeColor: '#2d2d2d',
+        themeImage: 'https://picsum.photos/seed/hattoushin-dark/800/600?grayscale&blur=3'
     },
 
     tonfa: {
@@ -129,7 +137,9 @@ const MEME_DATABASE = {
             name: '武術',
             description: '連続攻撃成功で威力累積+4/回',
             type: 'combo_stack'
-        }
+        },
+        themeColor: '#8b4513',
+        themeImage: 'https://picsum.photos/seed/tonfa-martial/800/600?blur=2'
     },
 
     cco: {
@@ -156,7 +166,9 @@ const MEME_DATABASE = {
             description: '不条理タグの戦場でダメージ+20%',
             type: 'battlefield_bonus',
             targetTag: 'ネタ'
-        }
+        },
+        themeColor: '#ff1493',
+        themeImage: 'https://picsum.photos/seed/cco-sound/800/600?blur=2'
     },
 
     // 海外ミーム
@@ -183,7 +195,9 @@ const MEME_DATABASE = {
             name: '不意打ち',
             description: '初ターン攻撃のダメージ+50%',
             type: 'first_turn_boost'
-        }
+        },
+        themeColor: '#ff4500',
+        themeImage: 'https://picsum.photos/seed/rickroll-music/800/600?blur=2'
     },
 
     thisisfine: {
@@ -209,7 +223,9 @@ const MEME_DATABASE = {
             name: '平然',
             description: 'HP50%以下で被ダメージ-25%',
             type: 'low_hp_defense'
-        }
+        },
+        themeColor: '#ff6347',
+        themeImage: 'https://picsum.photos/seed/thisisfine-fire/800/600?blur=2'
     },
 
     leeroy: {
@@ -235,7 +251,9 @@ const MEME_DATABASE = {
             name: '突撃',
             description: '攻撃力+10だが被ダメージ+15%',
             type: 'high_risk'
-        }
+        },
+        themeColor: '#dc143c',
+        themeImage: 'https://picsum.photos/seed/leeroy-charge/800/600?blur=2'
     },
 
     doge: {
@@ -261,7 +279,9 @@ const MEME_DATABASE = {
             name: 'such wow',
             description: 'ターン終了時15%でHP+5 or 鮮度+5',
             type: 'random_bonus'
-        }
+        },
+        themeColor: '#ffa500',
+        themeImage: 'https://picsum.photos/seed/doge-shiba/800/600?blur=2'
     }
 };
 
@@ -329,6 +349,14 @@ function selectRandomEnemy(playerMeme) {
     return availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
 }
 
+// 戦場テーマ画像のシード
+const BATTLEFIELD_IMAGE_SEEDS = [
+    'ancient-ruins', 'cyber-space', 'mystic-forest', 'volcanic-arena',
+    'crystal-cave', 'digital-void', 'neon-city', 'astral-plane',
+    'frozen-wasteland', 'sacred-temple', 'chaos-realm', 'zen-garden',
+    'thunderstorm', 'deep-ocean', 'star-nebula', 'haunted-mansion'
+];
+
 // ランダムな戦場を生成
 function generateRandomBattlefield() {
     // ランダムな名前生成
@@ -344,10 +372,15 @@ function generateRandomBattlefield() {
     const shuffled = [...ALL_TAGS].sort(() => Math.random() - 0.5);
     const tags = shuffled.slice(0, tagCount);
     
+    // 戦場背景画像（Picsum）
+    const imageSeed = BATTLEFIELD_IMAGE_SEEDS[Math.floor(Math.random() * BATTLEFIELD_IMAGE_SEEDS.length)];
+    const backgroundImage = `https://picsum.photos/seed/${imageSeed}/1200/800?blur=3`;
+    
     return {
         id: 'generated_' + Date.now(),
         name: name,
         description: description,
-        tags: tags
+        tags: tags,
+        backgroundImage: backgroundImage
     };
 }
