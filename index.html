@@ -428,6 +428,9 @@
             overflow: hidden;
             text-transform: uppercase;
             letter-spacing: 1px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .command-button::before {
@@ -455,6 +458,10 @@
             box-shadow: 
                 0 5px 20px rgba(0, 255, 136, 0.5),
                 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .command-button:active:not(:disabled) {
+            transform: translateY(-1px) scale(0.98);
         }
 
         .command-button:disabled {
@@ -1066,6 +1073,96 @@
             background: rgba(255, 170, 0, 0.3);
             border-radius: 3px;
             font-size: 0.85em;
+        }
+        
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .game-container {
+                padding: 15px;
+            }
+            
+            .command-button {
+                padding: 15px 8px;
+                font-size: 1em;
+            }
+            
+            .stream-item-button {
+                padding: 10px 6px;
+                font-size: 0.9em;
+            }
+            
+            .combatant {
+                padding: 10px;
+            }
+            
+            .avatar {
+                font-size: 3em;
+            }
+            
+            .battle-log {
+                max-height: 250px;
+                font-size: 0.9em;
+            }
+            
+            .result-display {
+                padding: 20px;
+            }
+            
+            .meme-selection {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .game-container {
+                padding: 10px;
+            }
+            
+            .command-buttons {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .command-button {
+                width: 100%;
+                padding: 18px 10px;
+            }
+            
+            .stream-items-panel {
+                padding: 10px;
+            }
+            
+            .stream-items-panel > div {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .meme-selection {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .ritual-circle {
+                transform: scale(0.7);
+            }
+            
+            .ritual-text {
+                font-size: 0.9em;
+                padding: 10px;
+            }
         }
     </style>
 </head>
