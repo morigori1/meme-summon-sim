@@ -40,6 +40,21 @@ class MemeRitualBattle {
         // 文脈再現度
         this.contextFidelity = 100;
         
+        // アイテム使用済みフラグ
+        this.usedItems = {
+            superchat: false,
+            amagift: false,
+            hakushu: false,
+            stamp: false
+        };
+        
+        // 連戦カウンター
+        this.stageNumber = 1;
+        this.continuousWins = 0;
+        
+        // 戦況ログ（スレまとめ用）
+        this.battleLog = [];
+        
         // Web Audio初期化（オプション）
         this.initAudio();
     }
@@ -75,6 +90,38 @@ class MemeRitualBattle {
         } catch (e) {
             // 失敗しても続行
         }
+    }
+    
+    playChord(frequencies, duration, volume = 0.1) {
+        if (!this.audioEnabled) return;
+        
+        frequencies.forEach((freq, index) => {
+            setTimeout(() => {
+                this.playTone(freq, duration, volume);
+            }, index * 50);
+        });
+    }
+    
+    playVictoryFanfare() {
+        if (!this.audioEnabled) return;
+        
+        const melody = [523, 659, 784, 1047]; // C, E, G, C
+        melody.forEach((freq, index) => {
+            setTimeout(() => {
+                this.playTone(freq, 0.3, 0.15);
+            }, index * 150);
+        });
+    }
+    
+    playDefeatSound() {
+        if (!this.audioEnabled) return;
+        
+        const melody = [400, 350, 300, 250];
+        melody.forEach((freq, index) => {
+            setTimeout(() => {
+                this.playTone(freq, 0.4, 0.12);
+            }, index * 200);
+        });
     }
 
     updatePhaseIndicator() {
@@ -202,9 +249,49 @@ class MemeRitualBattle {
             });
         });
         
+        document.querySelectorAll('.stream-item-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.useStreamItem(btn.dataset.item);
+            });
+        });
+        
         document.getElementById('restartButton').addEventListener('click', () => {
             location.reload();
         });
+    }
+    
+    async useStreamItem(itemId) {
+        if (this.usedItems[itemId]) return;
+        if (this.phase !== 'battle') return;
+        
+        const item = STREAM_ITEMS.find(i => i.id === itemId);
+        if (!item) return;
+        
+        this.usedItems[itemId] = true;
+        document.getElementById(`item-${itemId}`).disabled = true;
+        document.getElementById(`item-${itemId}`).classList.add('used');
+        
+        this.log(`${item.emoji} 【手動使用】${item.message}`, 'context-bonus');
+        this.playTone(900, 0.4, 0.18);
+        
+        await this.wait(300);
+        
+        switch(item.effect) {
+            case 'hp_heal':
+                this.playerMeme.hp = Math.min(this.playerMeme.maxHP, this.playerMeme.hp + item.value);
+                break;
+            case 'power_boost':
+                this.playerBuffs.nextDamageBoost = item.value;
+                break;
+            case 'freshness_boost':
+                this.playerMeme.freshness = Math.min(100, this.playerMeme.freshness + item.value);
+                break;
+            case 'confusion_enemy':
+                this.enemyMeme.freshness = Math.max(0, this.enemyMeme.freshness - 10);
+                break;
+        }
+        
+        this.renderCombatants();
     }
 
     async startBattle() {
@@ -542,13 +629,25 @@ class MemeRitualBattle {
         }
     }
     
-    async triggerNetEvent() {
-        const availableEvents = NET_EVENTS.filter(e => Math.random() < e.prob);
-        if (availableEvents.length === 0) return;
+    async triggerNetEvent(chainFrom = null) {
+        let event;
         
-        const event = availableEvents[Math.floor(Math.random() * availableEvents.length)];
-        this.log(`🌐 ${event.message}`, 'context-bonus');
-        this.playTone(500, 0.2, 0.1);
+        if (chainFrom) {
+            // 連鎖イベント
+            event = NET_EVENTS.find(e => e.id === chainFrom);
+            if (!event) return;
+            
+            this.log(`⛓️ 【連鎖】${event.message}`, 'damage');
+            this.playTone(600, 0.25, 0.12);
+        } else {
+            // 通常イベント
+            const availableEvents = NET_EVENTS.filter(e => e.prob > 0 && Math.random() < e.prob);
+            if (availableEvents.length === 0) return;
+            
+            event = availableEvents[Math.floor(Math.random() * availableEvents.length)];
+            this.log(`🌐 ${event.message}`, 'context-bonus');
+            this.playTone(500, 0.2, 0.1);
+        }
         
         await this.wait(300);
         
@@ -601,9 +700,43 @@ class MemeRitualBattle {
             case 'slow':
                 this.nextTurnDamageHalf = true;
                 break;
+            case 'panic':
+                this.playerMeme.hp -= 20;
+                this.enemyMeme.hp -= 20;
+                break;
+            case 'grass':
+                this.playerBuffs.attack += 5;
+                break;
+            case 'pile':
+                const target = Math.random() < 0.5 ? this.playerMeme : this.enemyMeme;
+                target.hp -= event.value;
+                break;
+            case 'stealth':
+                // 次ターンの鮮度消費なし（フラグ管理は省略）
+                break;
+            case 'expose':
+                this.playerMeme.freshness = Math.max(0, this.playerMeme.freshness - 10);
+                break;
+            case 'spam':
+                this.nextTurnConfused = true;
+                break;
+            case 'bot':
+                this.playerMeme.hp -= 8;
+                this.enemyMeme.hp -= 8;
+                break;
+            case 'flame':
+                this.playerMeme.hp -= 12;
+                this.enemyMeme.hp -= 12;
+                break;
         }
         
         this.renderCombatants();
+        
+        // 連鎖チェック（30%の確率）
+        if (event.chain && Math.random() < 0.3) {
+            await this.wait(500);
+            await this.triggerNetEvent(event.chain);
+        }
     }
     
     async triggerStreamItem() {
@@ -873,32 +1006,47 @@ class MemeRitualBattle {
         
         resultDisplay.className = 'result-display ' + result;
         
+        // スレまとめ風ログ生成
+        const threadSummary = this.generateThreadSummary(result);
+        
         switch(result) {
             case 'victory':
-                resultTitle.textContent = '🎉 勝利！ 🎉';
+                this.continuousWins++;
+                this.playVictoryFanfare();
+                this.shockwaveEffect();
+                resultTitle.textContent = `🎉 Stage ${this.stageNumber} クリア！ 🎉`;
                 resultFlavor.innerHTML = `
                     <p style="font-size: 1.1em; color: #00ff88;">${this.playerMeme.catchphrase}</p>
                     <p>${this.playerMeme.flavorWin}</p>
                     <p style="margin-top: 15px;">
                         ${this.playerMeme.displayName}が${this.enemyMeme.displayName}を制した！<br>
-                        残りHP: ${Math.max(0, this.playerMeme.hp)} / 鮮度: ${Math.max(0, this.playerMeme.freshness)}%
+                        残りHP: ${Math.max(0, this.playerMeme.hp)} / 鮮度: ${Math.max(0, this.playerMeme.freshness)}%<br>
+                        <strong style="color: #ffaa00;">連勝: ${this.continuousWins}回</strong>
                     </p>
-                    <p style="margin-top: 10px; font-size: 0.85em; color: #aaa; font-style: italic;">
-                        ${this.playerMeme.lore.split('。')[0]}。
-                    </p>
+                    ${threadSummary}
+                    <button id="continueButton" style="margin-top: 20px; padding: 15px 40px; font-size: 1.2em; background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer;">
+                        次のステージへ ➡️
+                    </button>
                 `;
+                
+                // 次のステージボタン
+                setTimeout(() => {
+                    document.getElementById('continueButton').addEventListener('click', () => {
+                        this.continueToNextStage();
+                    });
+                }, 100);
                 break;
             case 'defeat':
-                resultTitle.textContent = '💥 敗北... 💥';
+                this.playDefeatSound();
+                resultTitle.textContent = '💥 Game Over 💥';
                 resultFlavor.innerHTML = `
                     <p>${this.playerMeme.flavorLose}</p>
                     <p style="margin-top: 15px;">
+                        Stage ${this.stageNumber} で敗北...<br>
                         ${this.enemyMeme.displayName}の前に力尽きた...<br>
-                        次こそは勝利を掴め！
+                        <strong style="color: #ff3366;">最終記録: ${this.continuousWins}連勝</strong>
                     </p>
-                    <p style="margin-top: 10px; font-size: 0.85em; color: #aaa; font-style: italic;">
-                        ${this.enemyMeme.catchphrase}
-                    </p>
+                    ${threadSummary}
                 `;
                 break;
             case 'draw':
@@ -907,12 +1055,93 @@ class MemeRitualBattle {
                     <p>互いに一歩も引かぬ激戦！</p>
                     <p style="margin-top: 15px;">
                         ${this.playerMeme.displayName}と${this.enemyMeme.displayName}、<br>
-                        どちらも譲らぬまま時間切れ！<br>
-                        両者健闘を称え合った。
+                        どちらも譲らぬまま時間切れ！
                     </p>
+                    ${threadSummary}
                 `;
                 break;
         }
+    }
+    
+    generateThreadSummary(result) {
+        return `
+            <div style="margin-top: 20px; padding: 15px; background: rgba(0, 0, 0, 0.5); border-left: 4px solid #00ff88; border-radius: 5px; text-align: left; font-size: 0.9em;">
+                <strong style="color: #00ff88;">【スレまとめ】</strong><br>
+                <div style="margin-top: 10px; line-height: 1.6;">
+                    1: 名無しさん ${this.getTimestamp()}<br>
+                    ${this.playerMeme.displayName}つっよ<br><br>
+                    
+                    2: 名無しさん ${this.getTimestamp()}<br>
+                    ${result === 'victory' ? '余裕の勝利で草' : '負けてて草'}<br><br>
+                    
+                    3: 名無しさん ${this.getTimestamp()}<br>
+                    ${result === 'victory' ? `Stage ${this.stageNumber}クリアおめ` : 'お疲れ様でした'}<br><br>
+                    
+                    4: 名無しさん ${this.getTimestamp()}<br>
+                    ${result === 'victory' ? 'この調子で次もいけ' : 'また挑戦してくれ'}<br><br>
+                    
+                    5: 名無しさん ${this.getTimestamp()}<br>
+                    ${this.continuousWins > 0 ? `${this.continuousWins}連勝は強い` : '(´・ω・｀)'}<br><br>
+                </div>
+            </div>
+        `;
+    }
+    
+    getTimestamp() {
+        const now = new Date();
+        return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    }
+    
+    async continueToNextStage() {
+        this.stageNumber++;
+        
+        // 新しい戦場生成
+        this.battlefield = generateRandomBattlefield();
+        
+        // 新しい敵召喚
+        const enemyTemplate = selectRandomEnemy(this.playerMeme);
+        this.enemyMeme = {
+            ...enemyTemplate,
+            hp: enemyTemplate.baseHP + (this.stageNumber - 1) * 10, // ステージごとに強化
+            maxHP: enemyTemplate.baseHP + (this.stageNumber - 1) * 10,
+            freshness: 100
+        };
+        
+        // プレイヤーの一部回復
+        this.playerMeme.hp = Math.min(this.playerMeme.maxHP, this.playerMeme.hp + 30);
+        this.playerMeme.freshness = Math.min(100, this.playerMeme.freshness + 20);
+        
+        // リセット
+        this.turn = 0;
+        this.contextFidelity = 90; // 少し下げてスタート
+        this.playerCommand = null;
+        this.playerCharged = false;
+        this.enemyCharged = false;
+        this.playerComboCount = 0;
+        this.enemyComboCount = 0;
+        this.playerBuffs = { attack: 0, nextDamageBoost: 0 };
+        this.enemyBuffs = { attack: 0, nextDamageBoost: 0 };
+        this.nextTurnConfused = false;
+        this.nextTurnSkip = false;
+        this.nextTurnDamageHalf = false;
+        
+        // 画面切り替え
+        this.phase = 'battle';
+        document.getElementById('resultPhase').classList.remove('active');
+        document.getElementById('battlePhase').classList.add('active');
+        this.updatePhaseIndicator();
+        
+        // バトル画面を初期化
+        this.renderCombatants();
+        this.updateContextFidelity();
+        
+        document.getElementById('battleLog').innerHTML = '';
+        this.log(`━━━ Stage ${this.stageNumber} 開始！ ━━━`, 'system');
+        this.log(`${this.playerMeme.displayName} VS ${this.enemyMeme.displayName}`);
+        this.log(`戦場：${this.battlefield.name}`);
+        this.log(`敵が強化されている！（HP+${(this.stageNumber - 1) * 10}）`, 'damage');
+        
+        this.setCommandButtonsEnabled(true);
     }
 
     log(message, type = 'normal') {
@@ -1034,6 +1263,92 @@ class MemeRitualBattle {
                 if (action === 'attack' && meme.id === 'chipmunk' && Math.random() < 0.5) {
                     this.log('*dramatic sound* クリティカル！', 'context-bonus');
                     return Math.floor(damage * 1.5);
+                }
+                break;
+                
+            case 'desperate':
+                // オワタ式: HP20%以下で攻撃力+100%
+                if (action === 'attack' && meme.id === 'owata' && meme.hp <= meme.maxHP * 0.2) {
+                    this.log('＼(^o^)／オワタ→起死回生！', 'context-bonus');
+                    return damage * 2;
+                }
+                break;
+                
+            case 'debate_combo':
+                // 指さし論争: フェイント後の攻撃が+50%
+                if (action === 'attack' && meme.id === 'woman_cat') {
+                    // フェイント成功フラグがあれば（簡易実装）
+                    const comboCount = side === 'player' ? this.playerComboCount : this.enemyComboCount;
+                    if (comboCount === 0) { // フェイント直後
+                        this.log('論破！', 'context-bonus');
+                        return Math.floor(damage * 1.5);
+                    }
+                }
+                break;
+                
+            case 'finisher':
+                // Coffin Dance: 敵HP50%以下で攻撃力+40%
+                if (action === 'attack' && meme.id === 'coffin') {
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    if (target.hp <= target.maxHP * 0.5) {
+                        this.log('Astronomia♪ フィニッシャー！', 'context-bonus');
+                        return Math.floor(damage * 1.4);
+                    }
+                }
+                break;
+                
+            case 'empathy_damage':
+                // Wojak: 敵が鮮度50%以下の時、ダメージ+30%
+                if (action === 'attack' && meme.id === 'wojak') {
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    if (target.freshness <= 50) {
+                        this.log('I know that feel...', 'context-bonus');
+                        return Math.floor(damage * 1.3);
+                    }
+                }
+                break;
+                
+            case 'success_buff':
+                // 成功キッズ: 攻撃成功時、次ターン攻撃力+8
+                if (action === 'attack' && meme.id === 'success_kid') {
+                    if (side === 'player') {
+                        this.playerBuffs.attack += 8;
+                    } else {
+                        this.enemyBuffs.attack += 8;
+                    }
+                    this.log('Success! ガッツポーズ！', 'context-bonus');
+                }
+                break;
+                
+            case 'random_target':
+                // 気が散る構図: ランダムで攻撃対象切り替え
+                if (action === 'attack' && meme.id === 'distracted' && Math.random() < 0.15) {
+                    this.log('気が散った！攻撃方向が変わった！', 'damage');
+                    // ダメージを半減して自分にも当たる（簡易実装）
+                    meme.hp -= Math.floor(damage * 0.3);
+                    return Math.floor(damage * 0.7);
+                }
+                break;
+                
+            case 'swarm':
+                // ソニックファン: 攻撃時25%で2回攻撃
+                if (action === 'attack' && meme.id === 'knuckles' && Math.random() < 0.25) {
+                    this.log('click click click! 群れで攻撃！', 'context-bonus');
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    target.hp -= Math.floor(damage * 0.5);
+                    this.showDamagePopup(Math.floor(damage * 0.5), side === 'player' ? 'enemy' : 'player', false);
+                }
+                break;
+                
+            case 'pattern':
+                // NPC顔: 同じコマンドを3回繰り返すと威力2倍
+                if (action === 'attack' && meme.id === 'npc') {
+                    // 簡易実装: コンボカウントで判定
+                    const comboCount = side === 'player' ? this.playerComboCount : this.enemyComboCount;
+                    if (comboCount >= 3) {
+                        this.log('*scripted response* プログラム完了！', 'context-bonus');
+                        return damage * 2;
+                    }
                 }
                 break;
                 
