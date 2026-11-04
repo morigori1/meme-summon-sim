@@ -27,6 +27,42 @@ class MemeRitualBattle {
         // 連続攻撃カウンター初期化
         this.playerComboCount = 0;
         this.enemyComboCount = 0;
+        
+        // Web Audio初期化（オプション）
+        this.initAudio();
+    }
+    
+    initAudio() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.audioEnabled = true;
+        } catch (e) {
+            this.audioEnabled = false;
+            console.log('Web Audio not available');
+        }
+    }
+    
+    playTone(frequency, duration, volume = 0.1) {
+        if (!this.audioEnabled) return;
+        
+        try {
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(volume, this.audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+            
+            oscillator.start(this.audioContext.currentTime);
+            oscillator.stop(this.audioContext.currentTime + duration);
+        } catch (e) {
+            // 失敗しても続行
+        }
     }
 
     updatePhaseIndicator() {
@@ -174,7 +210,7 @@ class MemeRitualBattle {
         const gaugeFill = document.getElementById('ritualGaugeFill');
         const particles = document.getElementById('ritualParticles');
         
-        // パーティクル生成
+        // パーティクル生成（増量）
         this.createParticles(particles);
         
         // オーバーレイ表示
@@ -186,18 +222,22 @@ class MemeRitualBattle {
         // ステップ1: 準備
         step.textContent = '【第一段階】召喚陣準備...';
         gaugeFill.style.width = '0%';
-        await this.wait(1000);
+        this.playTone(200, 0.3, 0.1);
+        await this.wait(800);
         gaugeFill.style.width = '33%';
-        await this.wait(1000);
+        this.playTone(300, 0.3, 0.1);
+        await this.wait(800);
         
         // ステップ2: 詠唱
         step.textContent = '【第二段階】詠唱開始...';
         gaugeFill.style.width = '66%';
-        await this.wait(1500);
+        this.playTone(400, 0.4, 0.12);
+        await this.wait(1200);
         
         // ステップ3: QTE
         step.textContent = '【第三段階】力の集中！';
         gaugeFill.style.width = '100%';
+        this.playTone(500, 0.5, 0.15);
         await this.wait(500);
         
         const success = await this.qteManager.start();
@@ -205,7 +245,17 @@ class MemeRitualBattle {
         // ステップ4: 召喚完了
         if (success) {
             step.textContent = '✨ 召喚成功！ ✨';
+            
+            // 大フラッシュと衝撃波
             this.flashEffect();
+            this.shockwaveEffect();
+            this.screenShake();
+            
+            // 成功音
+            this.playTone(800, 0.3, 0.2);
+            await this.wait(100);
+            this.playTone(1000, 0.5, 0.2);
+            
             await this.wait(800);
             
             this.playerMeme.hp += 20;
@@ -216,6 +266,10 @@ class MemeRitualBattle {
             }, 100);
         } else {
             step.textContent = '💥 召喚不完全... 💥';
+            
+            // 失敗音
+            this.playTone(150, 0.5, 0.15);
+            
             await this.wait(1000);
             
             this.playerMeme.freshness -= 10;
@@ -232,12 +286,13 @@ class MemeRitualBattle {
     }
     
     createParticles(container) {
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 80; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
             particle.style.left = Math.random() * 100 + '%';
             particle.style.top = Math.random() * 100 + '%';
             particle.style.animationDelay = Math.random() * 2 + 's';
+            particle.style.animationDuration = (1 + Math.random()) + 's';
             container.appendChild(particle);
         }
     }
@@ -252,6 +307,51 @@ class MemeRitualBattle {
     
     wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    showDamagePopup(damage, target, isCrit = false) {
+        const targetElement = document.getElementById(target === 'player' ? 'playerAvatar' : 'enemyAvatar');
+        const rect = targetElement.getBoundingClientRect();
+        
+        const popup = document.createElement('div');
+        popup.className = `damage-popup ${target === 'player' ? 'player-damage' : 'enemy-damage'}${isCrit ? ' crit' : ''}`;
+        popup.textContent = `-${damage}`;
+        popup.style.left = rect.left + rect.width / 2 + 'px';
+        popup.style.top = rect.top + 'px';
+        
+        document.body.appendChild(popup);
+        
+        setTimeout(() => {
+            popup.remove();
+        }, 1000);
+    }
+    
+    screenShake() {
+        const container = document.querySelector('.game-container');
+        container.classList.add('screen-shake');
+        setTimeout(() => {
+            container.classList.remove('screen-shake');
+        }, 300);
+    }
+    
+    shockwaveEffect() {
+        const shockwave = document.getElementById('shockwave');
+        shockwave.classList.add('active');
+        setTimeout(() => {
+            shockwave.classList.remove('active');
+        }, 1000);
+    }
+    
+    hitFlash(target) {
+        const element = document.getElementById(target === 'player' ? 'playerAvatar' : 'enemyAvatar');
+        element.classList.add('hit-flash');
+        setTimeout(() => {
+            element.classList.remove('hit-flash');
+        }, 300);
+    }
+    
+    async hitStop(duration = 100) {
+        return new Promise(resolve => setTimeout(resolve, duration));
     }
 
     renderCombatants() {
@@ -363,14 +463,25 @@ class MemeRitualBattle {
             if (this.turn === 2 && Math.random() > 0.5) {
                 this.log('⚡ クリティカルチャンス！QTE発動！', 'context-bonus');
                 this.setCommandButtonsEnabled(false);
+                this.playTone(600, 0.3, 0.15);
                 const qteSuccess = await this.qteManager.start();
                 const qteResult = applyQTEBonus(qteSuccess, result.damage);
                 finalDamage = qteResult.damage;
                 this.log(qteResult.message, qteSuccess ? 'context-bonus' : 'damage');
+                if (qteSuccess) {
+                    this.playTone(900, 0.4, 0.18);
+                    this.screenShake();
+                }
             }
             
             // ユニーク特性適用
             finalDamage = this.applyUniqueTrait(this.playerMeme, 'player', 'attack', finalDamage, playerWasCharged);
+            
+            // ヒット演出
+            this.hitFlash('enemy');
+            this.playTone(400 + finalDamage * 3, 0.15, 0.15);
+            await this.hitStop(80);
+            this.showDamagePopup(finalDamage, 'enemy', playerWasCharged);
             
             this.enemyMeme.hp -= finalDamage;
             this.playerMeme.freshness -= 5;
@@ -392,9 +503,14 @@ class MemeRitualBattle {
         
         if (enemyCmd === 'attack' && playerCmd === 'feint') {
             this.log('プレイヤーのフェイントで敵の攻撃を回避！', 'context-bonus');
+            this.playTone(700, 0.2, 0.12);
             // ぬるぽ即応特性
             const feintDamage = this.applyUniqueTrait(this.playerMeme, 'player', 'feint_success', 0);
             if (feintDamage > 0) {
+                await this.hitStop(60);
+                this.hitFlash('enemy');
+                this.showDamagePopup(feintDamage, 'enemy', false);
+                this.playTone(500, 0.15, 0.1);
                 this.enemyMeme.hp -= feintDamage;
                 this.log(`反撃！${feintDamage}ダメージ！`, 'context-bonus');
             }
@@ -415,6 +531,12 @@ class MemeRitualBattle {
             
             // プレイヤーの防御特性適用
             finalDamage = this.applyDefenseTrait(this.playerMeme, finalDamage);
+            
+            // ヒット演出
+            this.hitFlash('player');
+            this.playTone(350 + finalDamage * 2, 0.15, 0.15);
+            await this.hitStop(80);
+            this.showDamagePopup(finalDamage, 'player', enemyWasCharged);
             
             this.playerMeme.hp -= finalDamage;
             this.enemyMeme.freshness -= 5;
