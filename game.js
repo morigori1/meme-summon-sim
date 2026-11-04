@@ -331,8 +331,31 @@ class MemeRitualBattle {
         
         // バトル画面を初期化
         this.renderCombatants();
+        this.updateCommandButtons(this.playerMeme); // コマンドボタン更新
         this.log(`${this.playerMeme.displayName} VS ${this.enemyMeme.displayName}`);
         this.log(`戦場：${this.battlefield.name}`);
+    }
+    
+    updateCommandButtons(meme) {
+        if (!meme || !meme.commands) return;
+        
+        // 攻撃ボタン
+        const attackBtn = document.querySelector('[data-command="attack"]');
+        if (attackBtn && meme.commands.attack) {
+            attackBtn.innerHTML = `${meme.commands.attack.name}<br><small>${meme.commands.attack.desc}</small>`;
+        }
+        
+        // フェイントボタン
+        const feintBtn = document.querySelector('[data-command="feint"]');
+        if (feintBtn && meme.commands.feint) {
+            feintBtn.innerHTML = `${meme.commands.feint.name}<br><small>${meme.commands.feint.desc}</small>`;
+        }
+        
+        // チャージボタン
+        const chargeBtn = document.querySelector('[data-command="charge"]');
+        if (chargeBtn && meme.commands.charge) {
+            chargeBtn.innerHTML = `${meme.commands.charge.name}<br><small>${meme.commands.charge.desc}</small>`;
+        }
     }
 
     async performRitualSequence() {
@@ -657,8 +680,8 @@ class MemeRitualBattle {
         const enemyCommand = this.selectEnemyCommand();
         
         this.log(`━━━ ターン ${this.turn + 1} ━━━`, 'system');
-        this.log(`プレイヤー: ${this.getCommandName(this.playerCommand)}`);
-        this.log(`敵: ${this.getCommandName(enemyCommand)}`);
+        this.log(`プレイヤー: ${this.getCommandName(this.playerCommand, this.playerMeme)}`);
+        this.log(`敵: ${this.getCommandName(enemyCommand, this.enemyMeme)}`);
         
         // 配信風アイテムランダム発動（15%）
         if (Math.random() < 0.15) {
@@ -972,6 +995,11 @@ class MemeRitualBattle {
                 this.nextTurnDamageHalf = false;
             }
             
+            // コマンド固有ボーナス適用
+            if (this.playerMeme.commands && this.playerMeme.commands.attack && this.playerMeme.commands.attack.bonus) {
+                finalDamage = Math.floor(finalDamage * this.playerMeme.commands.attack.bonus);
+            }
+            
             // ユニーク特性適用
             finalDamage = this.applyUniqueTrait(this.playerMeme, 'player', 'attack', finalDamage, playerWasCharged);
             
@@ -1059,6 +1087,11 @@ class MemeRitualBattle {
             );
             
             let finalDamage = result.damage;
+            
+            // コマンド固有ボーナス適用（敵）
+            if (this.enemyMeme.commands && this.enemyMeme.commands.attack && this.enemyMeme.commands.attack.bonus) {
+                finalDamage = Math.floor(finalDamage * this.enemyMeme.commands.attack.bonus);
+            }
             
             // 敵のユニーク特性適用
             finalDamage = this.applyUniqueTrait(this.enemyMeme, 'enemy', 'attack', finalDamage, enemyWasCharged);
@@ -1377,6 +1410,7 @@ class MemeRitualBattle {
         // バトル画面を初期化
         this.renderCombatants();
         this.updateContextFidelity();
+        this.updateCommandButtons(this.playerMeme); // コマンドボタン更新
         
         document.getElementById('battleLog').innerHTML = '';
         this.log(`━━━ Stage ${this.stageNumber} 開始！ ━━━`, 'system');
@@ -1408,7 +1442,13 @@ class MemeRitualBattle {
         logContainer.scrollTop = logContainer.scrollHeight;
     }
 
-    getCommandName(command) {
+    getCommandName(command, meme) {
+        // MEME固有のコマンド名を返す
+        if (meme && meme.commands && meme.commands[command]) {
+            return meme.commands[command].name;
+        }
+        
+        // フォールバック（汎用名）
         const names = {
             'attack': '攻撃',
             'feint': 'フェイント',
