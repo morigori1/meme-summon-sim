@@ -58,6 +58,9 @@ class MemeRitualBattle {
         // 連勝称号
         this.currentTitle = 'ネット初心者';
         
+        // 粘着ダメージカウンター
+        this.stickyTurns = 0;
+        
         // Web Audio初期化（オプション）
         this.initAudio();
     }
@@ -498,13 +501,35 @@ class MemeRitualBattle {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
     
-    showDamagePopup(damage, target, isCrit = false) {
+    showDamagePopup(damage, target, isCrit = false, isGraze = false, extra = '') {
         const targetElement = document.getElementById(target === 'player' ? 'playerAvatar' : 'enemyAvatar');
         const rect = targetElement.getBoundingClientRect();
         
         const popup = document.createElement('div');
-        popup.className = `damage-popup ${target === 'player' ? 'player-damage' : 'enemy-damage'}${isCrit ? ' crit' : ''}`;
-        popup.textContent = `-${damage}`;
+        
+        let className = `damage-popup ${target === 'player' ? 'player-damage' : 'enemy-damage'}`;
+        let text = `-${damage}`;
+        
+        if (isCrit) {
+            className += ' crit';
+            text = `CRITICAL! -${damage}`;
+            popup.style.fontSize = '2.5em';
+            popup.style.fontWeight = '900';
+        } else if (isGraze) {
+            className += ' graze';
+            text = `カス当たり -${damage}`;
+            popup.style.fontSize = '1.2em';
+            popup.style.opacity = '0.7';
+        } else {
+            popup.style.fontSize = '2em';
+        }
+        
+        if (extra) {
+            text += `\n${extra}`;
+        }
+        
+        popup.className = className;
+        popup.textContent = text;
         popup.style.left = rect.left + rect.width / 2 + 'px';
         popup.style.top = rect.top + 'px';
         
@@ -512,15 +537,21 @@ class MemeRitualBattle {
         
         setTimeout(() => {
             popup.remove();
-        }, 1000);
+        }, isCrit ? 1500 : 1000);
     }
     
-    screenShake() {
+    screenShake(intensity = 1) {
         const container = document.querySelector('.game-container');
+        container.style.setProperty('--shake-intensity', intensity);
         container.classList.add('screen-shake');
         setTimeout(() => {
             container.classList.remove('screen-shake');
-        }, 300);
+        }, intensity > 1.5 ? 500 : 300);
+    }
+    
+    async hitStop(duration) {
+        // ヒットストップをより強く
+        return this.wait(duration);
     }
     
     shockwaveEffect() {
@@ -591,6 +622,17 @@ class MemeRitualBattle {
         // ネットイベント発動チェック（毎ターン確率）
         if (Math.random() < 0.4) {
             await this.triggerNetEvent();
+        }
+        
+        // 粘着ダメージ処理
+        if (this.stickyTurns > 0) {
+            this.log(`👻 粘着荒らし継続中...（残り${this.stickyTurns}ターン）`, 'damage');
+            this.playerMeme.hp -= 5;
+            this.enemyMeme.hp -= 3;
+            this.showDamagePopup(5, 'player', false, false);
+            this.showDamagePopup(3, 'enemy', false, false);
+            await this.wait(400);
+            this.stickyTurns--;
         }
         
         // ターンスキップチェック
@@ -753,6 +795,46 @@ class MemeRitualBattle {
                 this.playerMeme.hp -= 12;
                 this.enemyMeme.hp -= 12;
                 break;
+            case 'sticky':
+                // 粘着荒らし: 3ターン持続ダメージ
+                this.stickyTurns = event.value;
+                break;
+            case 'multi':
+                // 連投: 連続3回ダメージ
+                this.playerMeme.hp -= 5;
+                await this.wait(200);
+                this.playerMeme.hp -= 5;
+                await this.wait(200);
+                this.playerMeme.hp -= 5;
+                this.log('連投ダメージ 5×3回！', 'damage');
+                break;
+            case 'quote':
+                // 引用ループ
+                this.nextTurnConfused = true;
+                this.playerMeme.hp -= 8;
+                this.enemyMeme.hp -= 8;
+                break;
+            case 'pile_on':
+                // ネタ被り
+                this.playerMeme.freshness = Math.max(0, this.playerMeme.freshness - 20);
+                break;
+            case 'long':
+                // 長文爆撃
+                this.playerMeme.hp -= 10;
+                break;
+            case 'img_spam':
+                // 画像連投
+                this.playerMeme.freshness -= 15;
+                this.enemyMeme.freshness -= 15;
+                break;
+            case 'trace':
+                // IP特定
+                this.playerBuffs.attack -= 8;
+                break;
+            case 'proxy':
+                // プロクシ失敗
+                this.playerMeme.freshness = Math.max(0, this.playerMeme.freshness - 15);
+                break;
         }
         
         this.renderCombatants();
@@ -895,19 +977,53 @@ class MemeRitualBattle {
             
             finalDamage = Math.max(1, finalDamage);
             
-            // ヒット演出
+            // ヒット演出（ごりごり強化）
             this.hitFlash('enemy');
-            this.playTone(400 + finalDamage * 3, 0.15, 0.15);
-            await this.hitStop(80);
-            this.showDamagePopup(finalDamage, 'enemy', playerWasCharged);
+            
+            // クリティカル/カス当たりで演出変更
+            if (result.isCritical) {
+                this.playChord([600, 750, 900], 0.3, 0.2);
+                await this.hitStop(150); // 長めのヒットストップ
+                this.screenShake(2.5); // 強めのシェイク
+            } else if (result.isGraze) {
+                this.playTone(300, 0.15, 0.08);
+                await this.hitStop(30);
+            } else {
+                this.playTone(400 + finalDamage * 3, 0.15, 0.15);
+                await this.hitStop(100);
+                this.screenShake(1.5);
+            }
+            
+            this.showDamagePopup(finalDamage, 'enemy', result.isCritical, result.isGraze, result.weirdMessage);
             
             this.enemyMeme.hp -= finalDamage;
             this.playerMeme.freshness -= 5;
             
             this.log(`${this.playerMeme.personality.attackLine}`, 'normal');
-            this.log(`${this.playerMeme.displayName}の${this.playerMeme.signatureMove}！${finalDamage}ダメージ！`, 'damage');
+            
+            // ごりごりログ（詳細表示）
+            let dmgLog = '';
+            if (result.isCritical) {
+                dmgLog = `💥【CRITICAL HIT】💥\n`;
+            } else if (result.isGraze) {
+                dmgLog = `【カス当たり...】\n`;
+            }
+            dmgLog += `${this.playerMeme.displayName}の${this.playerMeme.signatureMove}！ ▶ ${finalDamage}ダメージ`;
+            this.log(dmgLog, result.isCritical ? 'context-bonus' : 'damage');
+            
+            // 詳細計算情報
             if (result.matchCount > 0) {
-                this.log(`文脈適合ボーナス！(+${Math.floor(result.contextBonus * 100)}%)`, 'context-bonus');
+                this.log(`  ┣ 文脈適合 ×${result.matchCount} (+${Math.floor(result.contextBonus * 100)}%)`, 'normal');
+            }
+            if (result.weirdMessage) {
+                this.log(`  ┣ ${result.weirdMessage}`, 'context-bonus');
+            }
+            if (playerWasCharged) {
+                this.log(`  ┣ チャージボーナス (×2.0)`, 'context-bonus');
+            }
+            if (this.contextFidelity !== 50) {
+                const fidelityPercent = ((this.contextFidelity - 50) * 0.2).toFixed(1);
+                this.log(`  ┗ 文脈再現度補正 (${fidelityPercent > 0 ? '+' : ''}${fidelityPercent}%)`, 'normal');
             }
             
             this.playerComboCount++;
@@ -950,18 +1066,45 @@ class MemeRitualBattle {
             // プレイヤーの防御特性適用
             finalDamage = this.applyDefenseTrait(this.playerMeme, finalDamage);
             
-            // ヒット演出
+            // ヒット演出（ごりごり強化）
             this.hitFlash('player');
-            this.playTone(350 + finalDamage * 2, 0.15, 0.15);
-            await this.hitStop(80);
-            this.showDamagePopup(finalDamage, 'player', enemyWasCharged);
+            
+            if (result.isCritical) {
+                this.playChord([500, 650, 800], 0.3, 0.2);
+                await this.hitStop(150);
+                this.screenShake(2.5);
+            } else if (result.isGraze) {
+                this.playTone(250, 0.15, 0.08);
+                await this.hitStop(30);
+            } else {
+                this.playTone(350 + finalDamage * 2, 0.15, 0.15);
+                await this.hitStop(100);
+                this.screenShake(1.5);
+            }
+            
+            this.showDamagePopup(finalDamage, 'player', result.isCritical, result.isGraze, result.weirdMessage);
             
             this.playerMeme.hp -= finalDamage;
             this.enemyMeme.freshness -= 5;
             
-            this.log(`${this.enemyMeme.displayName}の攻撃！${finalDamage}ダメージ！`, 'damage');
+            // ごりごりログ
+            let enemyDmgLog = '';
+            if (result.isCritical) {
+                enemyDmgLog = `💥【敵CRITICAL】💥\n`;
+            } else if (result.isGraze) {
+                enemyDmgLog = `【敵のカス当たり】\n`;
+            }
+            enemyDmgLog += `${this.enemyMeme.displayName}の攻撃！ ▶ ${finalDamage}ダメージ`;
+            this.log(enemyDmgLog, 'damage');
+            
             if (result.matchCount > 0) {
-                this.log(`敵も文脈適合ボーナス！(+${Math.floor(result.contextBonus * 100)}%)`, 'damage');
+                this.log(`  ┣ 敵も文脈適合 ×${result.matchCount} (+${Math.floor(result.contextBonus * 100)}%)`, 'damage');
+            }
+            if (result.weirdMessage) {
+                this.log(`  ┣ ${result.weirdMessage}`, 'damage');
+            }
+            if (enemyWasCharged) {
+                this.log(`  ┗ 敵チャージボーナス (×2.0)`, 'damage');
             }
             
             this.enemyComboCount++;
@@ -998,9 +1141,63 @@ class MemeRitualBattle {
     selectEnemyCommand() {
         // 簡易AI
         const rand = Math.random();
-        if (rand < 0.4) return 'attack';
-        if (rand < 0.7) return 'feint';
-        return 'charge';
+        let selectedCmd;
+        if (rand < 0.4) selectedCmd = 'attack';
+        else if (rand < 0.7) selectedCmd = 'feint';
+        else selectedCmd = 'charge';
+        
+        // 予兆表示（70%の確率でヒント）
+        if (Math.random() < 0.7) {
+            this.showPrediction(selectedCmd);
+        }
+        
+        return selectedCmd;
+    }
+    
+    showPrediction(enemyCmd) {
+        const panel = document.getElementById('predictionPanel');
+        const text = document.getElementById('predictionText');
+        const icon = document.getElementById('predictionIcon');
+        
+        const predictions = {
+            attack: [
+                { text: '敵の殺気を感じる...攻撃の構えか？', icon: '⚔️', accuracy: 'high' },
+                { text: '攻撃態勢に入った気配', icon: '👊', accuracy: 'high' },
+                { text: '何か来そう...？（曖昧）', icon: '❓', accuracy: 'low' }
+            ],
+            feint: [
+                { text: '敵が様子をうかがっている...フェイント？', icon: '👁️', accuracy: 'high' },
+                { text: 'フェイントの気配を感知', icon: '💨', accuracy: 'high' },
+                { text: '動きが読めない...（曖昧）', icon: '🤔', accuracy: 'low' }
+            ],
+            charge: [
+                { text: '敵が力を溜め始めた気配...チャージか？', icon: '⚡', accuracy: 'high' },
+                { text: 'チャージの予兆を検知！', icon: '💪', accuracy: 'high' },
+                { text: '何か企んでいる...（曖昧）', icon: '🎭', accuracy: 'low' }
+            ]
+        };
+        
+        const cmdPredictions = predictions[enemyCmd];
+        const selected = cmdPredictions[Math.floor(Math.random() * cmdPredictions.length)];
+        
+        text.textContent = selected.text;
+        icon.textContent = selected.icon;
+        
+        // 精度が低い場合は40%でミスリード
+        if (selected.accuracy === 'low' && Math.random() < 0.4) {
+            const wrongCmds = Object.keys(predictions).filter(c => c !== enemyCmd);
+            const wrongCmd = wrongCmds[Math.floor(Math.random() * wrongCmds.length)];
+            const wrongPrediction = predictions[wrongCmd][0];
+            text.textContent = wrongPrediction.text + ' ⚠️誤情報？';
+            icon.textContent = '⚠️';
+        }
+        
+        panel.style.display = 'block';
+        
+        // 4秒後に消す
+        setTimeout(() => {
+            panel.style.display = 'none';
+        }, 4000);
     }
 
     checkBattleEnd() {
