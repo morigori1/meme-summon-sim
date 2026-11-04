@@ -282,12 +282,346 @@ const MEME_DATABASE = {
         },
         themeColor: '#ffa500',
         themeImage: 'https://picsum.photos/seed/doge-shiba/800/600?blur=2'
+    },
+
+    yaruo: {
+        id: 'yaruo',
+        name: 'やる夫',
+        displayName: 'やる夫',
+        avatar: '😊',
+        description: 'AAキャラクターの代表格',
+        tags: ['AA', '古典', '万能'],
+        basePower: 20,
+        baseHP: 100,
+        flavorWin: 'やったお！完全勝利だお！',
+        flavorLose: 'やる夫は負けたお...',
+        catchphrase: 'やるお！',
+        lore: '2chのAA文化を代表するキャラクター。シンプルな顔文字から無限の物語が生まれ、スレ文化を牽引した。',
+        signatureMove: 'やる夫パンチ',
+        personality: {
+            attackLine: 'いくお！',
+            feintLine: 'かわしたお！',
+            chargeLine: 'ためてるお...'
+        },
+        uniqueTrait: {
+            name: 'AA力',
+            description: 'AAタグの戦場で攻撃力+15%',
+            type: 'battlefield_bonus',
+            targetTag: 'AA'
+        },
+        themeColor: '#ffeb3b',
+        themeImage: 'https://picsum.photos/seed/yaruo-happy/800/600?blur=2'
+    },
+
+    giko: {
+        id: 'giko',
+        name: 'ギコ猫',
+        displayName: 'ギコ猫',
+        avatar: '🐱',
+        description: '2ch黎明期からのマスコット',
+        tags: ['古典', 'AA', '動物'],
+        basePower: 21,
+        baseHP: 95,
+        flavorWin: 'ギコギコ♪ 勝ったぞ！',
+        flavorLose: 'ギコ...無念...',
+        catchphrase: 'ギコギコ（ﾟДﾟ）',
+        lore: '2ch創成期を支えたAAキャラクター。モナーと並ぶマスコット的存在として、掲示板文化の象徴となった。',
+        signatureMove: 'ギコキック',
+        personality: {
+            attackLine: 'ギコ！',
+            feintLine: 'ギコギコ～',
+            chargeLine: 'ギコ...'
+        },
+        uniqueTrait: {
+            name: '古参',
+            description: '古典タグの戦場で鮮度減衰-3/ターン',
+            type: 'battlefield_bonus',
+            targetTag: '古典'
+        },
+        themeColor: '#795548',
+        themeImage: 'https://picsum.photos/seed/giko-cat/800/600?blur=2'
+    },
+
+    keyboard: {
+        id: 'keyboard',
+        name: 'キーボードクラッシャー',
+        displayName: 'キーボードクラッシャー',
+        avatar: '⌨️',
+        description: '激怒動画の伝説',
+        tags: ['海外', '圧倒', 'ネタ'],
+        basePower: 32,
+        baseHP: 85,
+        flavorWin: 'UNREAL!!! 完全勝利！！！',
+        flavorLose: 'キーボードが壊れた...',
+        catchphrase: 'UNREAL TOURNAMENT!!!',
+        lore: 'ゲームで負けてキーボードを破壊する少年の動画。怒りの表現として世界中でネタにされ、MAD素材の定番となった。',
+        signatureMove: 'キーボードスマッシュ',
+        personality: {
+            attackLine: 'AHHHHHHH!!!',
+            feintLine: 'NEIN NEIN NEIN!',
+            chargeLine: 'Unreal...'
+        },
+        uniqueTrait: {
+            name: '激怒',
+            description: 'HP50%以下で攻撃力+50%',
+            type: 'rage_mode'
+        },
+        themeColor: '#b71c1c',
+        themeImage: 'https://picsum.photos/seed/keyboard-rage/800/600?blur=2'
+    },
+
+    nyancat: {
+        id: 'nyancat',
+        name: 'Nyan Cat',
+        displayName: 'Nyan Cat',
+        avatar: '🌈',
+        description: '虹を纏う8bit猫',
+        tags: ['音楽', '海外', '動物'],
+        basePower: 19,
+        baseHP: 90,
+        flavorWin: 'Nyan nyan nyan~ 勝利！',
+        flavorLose: 'にゃーん...',
+        catchphrase: 'Nyan nyan nyan nyan~',
+        lore: '8bitの猫が虹の軌跡を残しながら飛ぶ映像と、エンドレスなニャーンソング。シンプルな中毒性で世界中に拡散された。',
+        signatureMove: 'レインボートレイル',
+        personality: {
+            attackLine: 'Nyan!',
+            feintLine: 'Nyan nyan~',
+            chargeLine: 'Nya...'
+        },
+        uniqueTrait: {
+            name: '虹の軌跡',
+            description: '移動するたびに鮮度+2回復',
+            type: 'movement_heal'
+        },
+        themeColor: '#ff69b4',
+        themeImage: 'https://picsum.photos/seed/nyancat-rainbow/800/600?blur=2'
+    },
+
+    warota: {
+        id: 'warota',
+        name: 'ワロタ',
+        displayName: 'ワロタ',
+        avatar: '😂',
+        description: '2ch笑いの基本形',
+        tags: ['語録', '古典', 'ネタ'],
+        basePower: 18,
+        baseHP: 95,
+        flavorWin: 'ワロタwwwww 勝ったwww',
+        flavorLose: 'ワロエナイ...',
+        catchphrase: 'ワロタwwwwwww',
+        lore: '「笑った」を短縮した2ch用語。草（w）とともに笑いを表現する基本形として定着。バリエーション無限。',
+        signatureMove: '草生やし',
+        personality: {
+            attackLine: 'ワロタwww',
+            feintLine: 'ワロスww',
+            chargeLine: 'ワロ...'
+        },
+        uniqueTrait: {
+            name: '草',
+            description: '攻撃命中時、敵の鮮度-5（笑いで動揺）',
+            type: 'laugh_debuff'
+        },
+        themeColor: '#4caf50',
+        themeImage: 'https://picsum.photos/seed/warota-laugh/800/600?blur=2'
+    },
+
+    amongus: {
+        id: 'amongus',
+        name: 'Among Us',
+        displayName: 'Among Us',
+        avatar: '🔴',
+        description: 'sus... 疑惑のゲーム',
+        tags: ['ゲーム', '海外', '不意打ち'],
+        basePower: 24,
+        baseHP: 90,
+        flavorWin: 'I was not the impostor. 勝利！',
+        flavorLose: 'ejected...',
+        catchphrase: 'Red is sus.',
+        lore: '宇宙船で裏切り者を探すゲームが、「sus」という言葉とともに世界的ミームに。シンプルなキャラが無限のネタを生んだ。',
+        signatureMove: 'vent kill',
+        personality: {
+            attackLine: 'sus!',
+            feintLine: 'I saw you vent!',
+            chargeLine: 'emergency meeting...'
+        },
+        uniqueTrait: {
+            name: 'impostor',
+            description: 'フェイント使用時、25%で攻撃に変化',
+            type: 'impostor_fake'
+        },
+        themeColor: '#ff0000',
+        themeImage: 'https://picsum.photos/seed/amongus-space/800/600?blur=2'
+    },
+
+    pepe: {
+        id: 'pepe',
+        name: 'カエル絵文字',
+        displayName: 'カエル絵文字',
+        avatar: '🐸',
+        description: 'feels good man',
+        tags: ['海外', '哲学', '万能'],
+        basePower: 22,
+        baseHP: 100,
+        flavorWin: 'feels good man',
+        flavorLose: 'feels bad man...',
+        catchphrase: 'feels good man',
+        lore: 'カエルの感情表現ミームとして無数のバリエーションを生んだ。悲しみから喜びまで、あらゆる感情を代弁する存在。',
+        signatureMove: 'rare pepe',
+        personality: {
+            attackLine: 'reeeee!',
+            feintLine: 'smug',
+            chargeLine: 'thinking...'
+        },
+        uniqueTrait: {
+            name: 'rare',
+            description: '毎ターン10%で完全回避',
+            type: 'rare_dodge'
+        },
+        themeColor: '#8bc34a',
+        themeImage: 'https://picsum.photos/seed/pepe-frog/800/600?blur=2'
+    },
+
+    brain: {
+        id: 'brain',
+        name: 'Galaxy Brain',
+        displayName: 'Galaxy Brain',
+        avatar: '🧠',
+        description: '拡張する脳ミーム',
+        tags: ['海外', '哲学', 'ネタ'],
+        basePower: 27,
+        baseHP: 80,
+        flavorWin: 'ascended 勝利',
+        flavorLose: 'smooth brain...',
+        catchphrase: 'galaxy brain moment',
+        lore: '段階的に拡大する脳で知性レベルを表現するミーム。最終形態は宇宙レベル。皮肉と真面目の境界を曖昧にする。',
+        signatureMove: '次元上昇',
+        personality: {
+            attackLine: 'big brain!',
+            feintLine: '200 IQ play',
+            chargeLine: 'transcending...'
+        },
+        uniqueTrait: {
+            name: 'ascended',
+            description: 'チャージ3回で攻撃力2倍',
+            type: 'ascension'
+        },
+        themeColor: '#9c27b0',
+        themeImage: 'https://picsum.photos/seed/brain-galaxy/800/600?blur=2'
+    },
+
+    stonks: {
+        id: 'stonks',
+        name: 'Stonks',
+        displayName: 'Stonks',
+        avatar: '📈',
+        description: 'meme economy',
+        tags: ['海外', 'ネタ', '万能'],
+        basePower: 25,
+        baseHP: 95,
+        flavorWin: 'STONKS↗️',
+        flavorLose: 'not stonks↘️',
+        catchphrase: 'STONKS',
+        lore: '株価チャートと謎のスーツ男で投資ネタを表現。わざと間違えた「stonks」表記が特徴。ミーム経済の象徴。',
+        signatureMove: '爆上げ',
+        personality: {
+            attackLine: 'stonks!',
+            feintLine: 'buy the dip',
+            chargeLine: 'hodl...'
+        },
+        uniqueTrait: {
+            name: 'volatile',
+            description: 'ダメージが±30%でランダム変動',
+            type: 'stonks_random'
+        },
+        themeColor: '#00bcd4',
+        themeImage: 'https://picsum.photos/seed/stonks-market/800/600?blur=2'
+    },
+
+    ratio: {
+        id: 'ratio',
+        name: 'Ratio',
+        displayName: 'Ratio',
+        avatar: '💬',
+        description: 'Twitter文化の煽り',
+        tags: ['海外', '即応', '圧倒'],
+        basePower: 20,
+        baseHP: 85,
+        flavorWin: 'ratio + L + cope',
+        flavorLose: 'got ratiod...',
+        catchphrase: 'ratio',
+        lore: 'リプライが元ツイートよりバズること。SNS文化特有の煽りとして定着。「L」「cope」などの追撃も定番。',
+        signatureMove: 'ratio combo',
+        personality: {
+            attackLine: 'ratio',
+            feintLine: 'L + ratio',
+            chargeLine: 'based'
+        },
+        uniqueTrait: {
+            name: 'ratio',
+            description: '敵の攻撃後、反撃ダメージ+10',
+            type: 'ratio_counter'
+        },
+        themeColor: '#1da1f2',
+        themeImage: 'https://picsum.photos/seed/ratio-twitter/800/600?blur=2'
+    },
+
+    chipmunk: {
+        id: 'chipmunk',
+        name: 'Dramatic動物',
+        displayName: 'Dramatic動物',
+        avatar: '🐿️',
+        description: '劇的な振り向き',
+        tags: ['動物', '海外', 'ネタ'],
+        basePower: 23,
+        baseHP: 90,
+        flavorWin: '劇的勝利！',
+        flavorLose: '劇的敗北...',
+        catchphrase: '*dramatic music*',
+        lore: '振り向きと同時に流れる劇的な音楽。5秒の映像が無限のリアクション素材として使われ続ける。',
+        signatureMove: 'dramatic turn',
+        personality: {
+            attackLine: '*dramatic sound*',
+            feintLine: '*gasp*',
+            chargeLine: '*suspense*'
+        },
+        uniqueTrait: {
+            name: 'dramatic',
+            description: '攻撃時50%でクリティカル判定',
+            type: 'dramatic_crit'
+        },
+        themeColor: '#ff9800',
+        themeImage: 'https://picsum.photos/seed/chipmunk-drama/800/600?blur=2'
     }
 };
 
 // タグプール
 const ALL_TAGS = ['古典', 'AA', '語録', '圧倒', '突撃', '即応', 'ネタ', '空耳', '不気味', 
                   '海外', '音楽', 'ゲーム', '哲学', '現実逃避', '連携', '武術', '音MAD', '動物', '万能'];
+
+// ネットイベントプール
+const NET_EVENTS = [
+    { id: 'thread_flow', name: 'スレが流れた', effect: 'freshness_down', value: 8, prob: 0.15, message: '💨 スレが流れた！両者の鮮度-8！' },
+    { id: 'troll', name: '荒らし乱入', effect: 'random_damage', value: 15, prob: 0.12, message: '👹 荒らしが乱入！ランダムで15ダメージ！' },
+    { id: 'bait', name: '釣りだった', effect: 'hp_swap', value: 0, prob: 0.08, message: '🎣 釣りだった！HP差が縮まる！' },
+    { id: 'warota_chain', name: 'ワロタ連鎖', effect: 'both_heal', value: 10, prob: 0.15, message: '😂 ワロタ連鎖！両者HP+10回復！www' },
+    { id: 'nullpo_gat', name: 'ぬるぽ→ガッ', effect: 'quick_damage', value: 12, prob: 0.10, message: '💥 ぬるぽ→ガッ！即座に12ダメージ！' },
+    { id: 'rickroll', name: '釣りリンク', effect: 'confusion', value: 0, prob: 0.10, message: '🎵 ♪Never gonna give you up... 次ターン混乱！' },
+    { id: 'server_down', name: '鯖落ち', effect: 'skip_turn', value: 0, prob: 0.08, message: '💀 鯖落ち！このターンスキップ！' },
+    { id: 'aa_broken', name: 'AA崩壊', effect: 'freshness_chaos', value: 15, prob: 0.10, message: '📝 AA崩壊！鮮度大混乱！' },
+    { id: 'ratio', name: 'ratio喰らった', effect: 'debuff', value: 5, prob: 0.12, message: '💬 ratio喰らった！次ターン攻撃力-5！L + cope' },
+    { id: 'based', name: 'based認定', effect: 'buff', value: 10, prob: 0.12, message: '😎 based認定された！次ターン攻撃力+10！' },
+    { id: 'skill_issue', name: 'skill issue', effect: 'mock', value: 0, prob: 0.10, message: '🤷 skill issue指摘！気にするな（鮮度-5）' },
+    { id: 'ping_death', name: 'ping999ms', effect: 'slow', value: 0, prob: 0.08, message: '🌐 ping999ms！動きが鈍い！次ターンダメージ半減' }
+];
+
+// 配信風アイテム
+const STREAM_ITEMS = [
+    { id: 'superchat', name: 'スパチャ風投げ銭', effect: 'hp_heal', value: 20, emoji: '💵', message: 'スパチャきた！HP+20回復！' },
+    { id: 'amagift', name: 'あまぎふ風', effect: 'power_boost', value: 15, emoji: '🎁', message: 'あまぎふ投下！次の攻撃+15！' },
+    { id: 'hakushu', name: '拍手〇風', effect: 'freshness_boost', value: 20, emoji: '👏', message: '拍手の嵐！鮮度+20回復！' },
+    { id: 'stamp', name: 'スタンプ連打', effect: 'confusion_enemy', value: 0, emoji: '🎭', message: 'スタンプ連打！敵が混乱！' }
+];
 
 // 戦場名生成用の語彙
 const BATTLEFIELD_ADJECTIVES = [

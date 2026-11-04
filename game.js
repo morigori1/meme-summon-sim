@@ -28,6 +28,18 @@ class MemeRitualBattle {
         this.playerComboCount = 0;
         this.enemyComboCount = 0;
         
+        // バフ/デバフ管理
+        this.playerBuffs = { attack: 0, nextDamageBoost: 0 };
+        this.enemyBuffs = { attack: 0, nextDamageBoost: 0 };
+        
+        // イベント発動フラグ
+        this.nextTurnConfused = false;
+        this.nextTurnSkip = false;
+        this.nextTurnDamageHalf = false;
+        
+        // 文脈再現度
+        this.contextFidelity = 100;
+        
         // Web Audio初期化（オプション）
         this.initAudio();
     }
@@ -304,6 +316,7 @@ class MemeRitualBattle {
             
             this.playerMeme.hp += 20;
             this.playerMeme.maxHP += 20;
+            this.contextFidelity = 100;
             
             setTimeout(() => {
                 this.log('🎉 儀式成功！プレイヤーに先制ボーナス！', 'context-bonus');
@@ -316,11 +329,31 @@ class MemeRitualBattle {
             
             await this.wait(1000);
             
-            this.playerMeme.freshness -= 10;
-            
-            setTimeout(() => {
-                this.log('💥 儀式失敗...初手が不安定に', 'damage');
-            }, 100);
+            // 失敗時の意味不明ボーナス
+            const chaos = Math.random();
+            if (chaos < 0.3) {
+                // なぜかHP増加
+                this.playerMeme.hp += 15;
+                this.playerMeme.maxHP += 15;
+                setTimeout(() => {
+                    this.log('💥 儀式失敗...したが謎のHP増加！？', 'context-bonus');
+                    this.log('（なんでだよ）', 'normal');
+                }, 100);
+            } else if (chaos < 0.6) {
+                // 鮮度が逆に上昇
+                this.playerMeme.freshness = 100;
+                setTimeout(() => {
+                    this.log('💥 儀式失敗...したが鮮度MAX！？', 'context-bonus');
+                    this.log('（理解不能）', 'normal');
+                }, 100);
+            } else {
+                // 普通に失敗
+                this.playerMeme.freshness -= 10;
+                this.contextFidelity = 70;
+                setTimeout(() => {
+                    this.log('💥 儀式失敗...初手が不安定に', 'damage');
+                }, 100);
+            }
         }
         
         overlay.classList.remove('active');
@@ -443,6 +476,29 @@ class MemeRitualBattle {
         // ボタンを無効化
         this.setCommandButtonsEnabled(false);
         
+        // ネットイベント発動チェック（毎ターン確率）
+        if (Math.random() < 0.4) {
+            await this.triggerNetEvent();
+        }
+        
+        // ターンスキップチェック
+        if (this.nextTurnSkip) {
+            this.log(`━━━ ターン ${this.turn + 1} ━━━`, 'system');
+            this.log('⏭️ 鯖落ちの影響でこのターンはスキップされた！', 'damage');
+            this.nextTurnSkip = false;
+            this.turn++;
+            this.updatePhaseIndicator();
+            
+            if (!this.checkBattleEnd() && this.turn < this.maxTurns) {
+                this.playerCommand = null;
+                document.querySelectorAll('.command-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                this.setCommandButtonsEnabled(true);
+            }
+            return;
+        }
+        
         // 敵のコマンドをAIで選択
         const enemyCommand = this.selectEnemyCommand();
         
@@ -450,12 +506,26 @@ class MemeRitualBattle {
         this.log(`プレイヤー: ${this.getCommandName(this.playerCommand)}`);
         this.log(`敵: ${this.getCommandName(enemyCommand)}`);
         
+        // 配信風アイテムランダム発動（15%）
+        if (Math.random() < 0.15) {
+            await this.triggerStreamItem();
+        }
+        
         // コマンド解決
         await this.resolveCommands(this.playerCommand, enemyCommand);
+        
+        // 自己ツッコミログ（カオス）
+        if (Math.random() < 0.25) {
+            this.addChaosComment();
+        }
         
         // ターン終了処理
         this.turn++;
         this.updatePhaseIndicator();
+        
+        // 文脈再現度の減衰
+        this.contextFidelity = Math.max(20, this.contextFidelity - 5);
+        this.updateContextFidelity();
         
         // 勝敗判定
         if (this.checkBattleEnd()) {
@@ -469,6 +539,134 @@ class MemeRitualBattle {
                 btn.classList.remove('selected');
             });
             this.setCommandButtonsEnabled(true);
+        }
+    }
+    
+    async triggerNetEvent() {
+        const availableEvents = NET_EVENTS.filter(e => Math.random() < e.prob);
+        if (availableEvents.length === 0) return;
+        
+        const event = availableEvents[Math.floor(Math.random() * availableEvents.length)];
+        this.log(`🌐 ${event.message}`, 'context-bonus');
+        this.playTone(500, 0.2, 0.1);
+        
+        await this.wait(300);
+        
+        switch(event.effect) {
+            case 'freshness_down':
+                this.playerMeme.freshness = Math.max(0, this.playerMeme.freshness - event.value);
+                this.enemyMeme.freshness = Math.max(0, this.enemyMeme.freshness - event.value);
+                break;
+            case 'random_damage':
+                if (Math.random() < 0.5) {
+                    this.playerMeme.hp -= event.value;
+                    this.showDamagePopup(event.value, 'player', false);
+                } else {
+                    this.enemyMeme.hp -= event.value;
+                    this.showDamagePopup(event.value, 'enemy', false);
+                }
+                break;
+            case 'hp_swap':
+                const avgHP = (this.playerMeme.hp + this.enemyMeme.hp) / 2;
+                this.playerMeme.hp = Math.floor(avgHP);
+                this.enemyMeme.hp = Math.floor(avgHP);
+                break;
+            case 'both_heal':
+                this.playerMeme.hp = Math.min(this.playerMeme.maxHP, this.playerMeme.hp + event.value);
+                this.enemyMeme.hp = Math.min(this.enemyMeme.maxHP, this.enemyMeme.hp + event.value);
+                break;
+            case 'quick_damage':
+                this.enemyMeme.hp -= event.value;
+                this.showDamagePopup(event.value, 'enemy', false);
+                break;
+            case 'confusion':
+                this.nextTurnConfused = true;
+                break;
+            case 'skip_turn':
+                this.nextTurnSkip = true;
+                break;
+            case 'freshness_chaos':
+                this.playerMeme.freshness = Math.max(20, Math.min(100, this.playerMeme.freshness + (Math.random() * 30 - 15)));
+                this.enemyMeme.freshness = Math.max(20, Math.min(100, this.enemyMeme.freshness + (Math.random() * 30 - 15)));
+                break;
+            case 'debuff':
+                this.playerBuffs.attack = -event.value;
+                break;
+            case 'buff':
+                this.playerBuffs.attack = event.value;
+                break;
+            case 'mock':
+                this.playerMeme.freshness = Math.max(0, this.playerMeme.freshness - 5);
+                break;
+            case 'slow':
+                this.nextTurnDamageHalf = true;
+                break;
+        }
+        
+        this.renderCombatants();
+    }
+    
+    async triggerStreamItem() {
+        const item = STREAM_ITEMS[Math.floor(Math.random() * STREAM_ITEMS.length)];
+        this.log(`${item.emoji} ${item.message}`, 'context-bonus');
+        this.playTone(800, 0.3, 0.15);
+        
+        await this.wait(300);
+        
+        switch(item.effect) {
+            case 'hp_heal':
+                this.playerMeme.hp = Math.min(this.playerMeme.maxHP, this.playerMeme.hp + item.value);
+                break;
+            case 'power_boost':
+                this.playerBuffs.nextDamageBoost = item.value;
+                break;
+            case 'freshness_boost':
+                this.playerMeme.freshness = Math.min(100, this.playerMeme.freshness + item.value);
+                break;
+            case 'confusion_enemy':
+                this.enemyMeme.freshness = Math.max(0, this.enemyMeme.freshness - 10);
+                break;
+        }
+        
+        this.renderCombatants();
+    }
+    
+    addChaosComment() {
+        const comments = [
+            '（は？）',
+            '（なんだこれ...）',
+            '（草）',
+            '（理解不能）',
+            '（どうしてこうなった）',
+            '（ワロタ）',
+            '（カオス）',
+            '（これもうわかんねぇな）',
+            '（やべぇよ...やべぇよ...）',
+            '（いいぞもっとやれ）'
+        ];
+        this.log(comments[Math.floor(Math.random() * comments.length)], 'normal');
+    }
+    
+    updateContextFidelity() {
+        const valueEl = document.getElementById('contextFidelityValue');
+        const bonusEl = document.getElementById('fidelityBonus');
+        
+        if (valueEl) {
+            valueEl.textContent = Math.floor(this.contextFidelity);
+            
+            // 色変化
+            if (this.contextFidelity >= 80) {
+                valueEl.style.color = '#00ff88';
+            } else if (this.contextFidelity >= 50) {
+                valueEl.style.color = '#ffaa00';
+            } else {
+                valueEl.style.color = '#ff3366';
+            }
+        }
+        
+        if (bonusEl) {
+            const bonus = (this.contextFidelity - 50) * 0.2;
+            bonusEl.textContent = bonus > 0 ? `+${bonus.toFixed(1)}` : bonus.toFixed(1);
         }
     }
 
@@ -518,8 +716,26 @@ class MemeRitualBattle {
                 }
             }
             
+            // バフ/デバフ適用
+            finalDamage += this.playerBuffs.attack;
+            finalDamage += this.playerBuffs.nextDamageBoost;
+            this.playerBuffs.nextDamageBoost = 0;
+            
+            // 文脈再現度による補正（±10%）
+            const fidelityBonus = (this.contextFidelity - 50) * 0.002;
+            finalDamage = Math.floor(finalDamage * (1 + fidelityBonus));
+            
+            // ダメージ半減チェック
+            if (this.nextTurnDamageHalf) {
+                finalDamage = Math.floor(finalDamage * 0.5);
+                this.log('🌐 ping遅延の影響でダメージ半減！', 'damage');
+                this.nextTurnDamageHalf = false;
+            }
+            
             // ユニーク特性適用
             finalDamage = this.applyUniqueTrait(this.playerMeme, 'player', 'attack', finalDamage, playerWasCharged);
+            
+            finalDamage = Math.max(1, finalDamage);
             
             // ヒット演出
             this.hitFlash('enemy');
@@ -733,6 +949,91 @@ class MemeRitualBattle {
                 if (action === 'attack' && meme.id === 'yaju') {
                     meme.freshness = Math.min(100, meme.freshness + 3);
                     this.log(`${meme.displayName}の語録で鮮度回復！`, 'context-bonus');
+                }
+                break;
+                
+            case 'rage_mode':
+                // キーボードクラッシャー: HP50%以下で攻撃力+50%
+                if (action === 'attack' && meme.id === 'keyboard' && meme.hp <= meme.maxHP * 0.5) {
+                    const bonus = Math.floor(damage * 0.5);
+                    this.log(`${meme.displayName}の激怒！`, 'context-bonus');
+                    return damage + bonus;
+                }
+                break;
+                
+            case 'movement_heal':
+                // Nyan Cat: 攻撃するたびに鮮度+2
+                if (action === 'attack' && meme.id === 'nyancat') {
+                    meme.freshness = Math.min(100, meme.freshness + 2);
+                    this.log('Nyan~ 虹の軌跡！', 'context-bonus');
+                }
+                break;
+                
+            case 'laugh_debuff':
+                // ワロタ: 攻撃命中時、敵の鮮度-5
+                if (action === 'attack' && meme.id === 'warota') {
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    target.freshness = Math.max(0, target.freshness - 5);
+                    this.log('草生やして相手を動揺させた！www', 'context-bonus');
+                }
+                break;
+                
+            case 'impostor_fake':
+                // Among Us: フェイント使用時、25%で攻撃に変化
+                if (action === 'feint' && meme.id === 'amongus' && Math.random() < 0.25) {
+                    this.log('impostorだった！実は攻撃！', 'context-bonus');
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    const sneakDamage = Math.floor(meme.basePower * 0.8);
+                    target.hp -= sneakDamage;
+                    this.showDamagePopup(sneakDamage, side === 'player' ? 'enemy' : 'player', false);
+                }
+                break;
+                
+            case 'rare_dodge':
+                // Pepe: 毎ターン10%で完全回避（攻撃受ける時にチェック）
+                if (action === 'defend' && meme.id === 'pepe' && Math.random() < 0.1) {
+                    this.log('rare pepe発動！完全回避！', 'context-bonus');
+                    return 0;
+                }
+                break;
+                
+            case 'ascension':
+                // Galaxy Brain: チャージ3回で攻撃力2倍
+                if (action === 'attack' && meme.id === 'brain') {
+                    const chargeCount = side === 'player' ? this.playerComboCount : this.enemyComboCount;
+                    if (chargeCount >= 3) {
+                        this.log('次元上昇！galaxy brain！', 'context-bonus');
+                        return damage * 2;
+                    }
+                }
+                break;
+                
+            case 'stonks_random':
+                // Stonks: ダメージが±30%でランダム変動
+                if (action === 'attack' && meme.id === 'stonks') {
+                    const variance = 0.7 + Math.random() * 0.6; // 0.7 ~ 1.3
+                    const newDamage = Math.floor(damage * variance);
+                    if (variance > 1.0) {
+                        this.log('stonks↗️ ボラティリティ！', 'context-bonus');
+                    } else {
+                        this.log('not stonks↘️', 'damage');
+                    }
+                    return newDamage;
+                }
+                break;
+                
+            case 'ratio_counter':
+                // Ratio: 敵の攻撃後、反撃ダメージ+10
+                if (action === 'counter' && meme.id === 'ratio') {
+                    return 10;
+                }
+                break;
+                
+            case 'dramatic_crit':
+                // Dramatic: 攻撃時50%でクリティカル判定
+                if (action === 'attack' && meme.id === 'chipmunk' && Math.random() < 0.5) {
+                    this.log('*dramatic sound* クリティカル！', 'context-bonus');
+                    return Math.floor(damage * 1.5);
                 }
                 break;
                 
