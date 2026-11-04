@@ -592,6 +592,259 @@ const MEME_DATABASE = {
         },
         themeColor: '#ff9800',
         themeImage: 'https://picsum.photos/seed/chipmunk-drama/800/600?blur=2'
+    },
+
+    kumikyoku: {
+        id: 'kumikyoku',
+        name: '組曲',
+        displayName: '組曲『ニコニコ動画』',
+        avatar: '🎼',
+        description: 'メドレー文化の金字塔',
+        tags: ['音MAD', '音楽', '連携'],
+        basePower: 26,
+        baseHP: 95,
+        flavorWin: '全パート完走！勝利のメドレー！',
+        flavorLose: 'メドレーが途切れた...',
+        catchphrase: '七色のニコニコ動画～♪',
+        lore: 'ニコニコ動画の人気曲をメドレーにした文化現象。初音ミクから東方まで、ネット文化の総決算として君臨した。',
+        signatureMove: 'メドレーアタック',
+        personality: {
+            attackLine: '次いくよー',
+            feintLine: '間奏中',
+            chargeLine: 'イントロ...'
+        },
+        uniqueTrait: {
+            name: '連携',
+            description: '連携タグの戦場で全能力+20%',
+            type: 'battlefield_bonus',
+            targetTag: '連携'
+        },
+        themeColor: '#ff6699',
+        themeImage: 'https://picsum.photos/seed/kumikyoku-medley/800/600?blur=2'
+    },
+
+    owata: {
+        id: 'owata',
+        name: 'オワタ式',
+        displayName: 'オワタ＼(^o^)／',
+        avatar: '🙌',
+        description: '人生オワタの大冒険',
+        tags: ['AA', 'ゲーム', 'ネタ'],
+        basePower: 24,
+        baseHP: 80,
+        flavorWin: 'オワタと思ったら勝った！',
+        flavorLose: '人生オワタ＼(^o^)／',
+        catchphrase: '＼(^o^)／オワタ',
+        lore: 'マリオ改造ゲームから生まれた絶望系AA。理不尽な難易度と諦めの美学を体現し、挑戦する者を魅了した。',
+        signatureMove: 'オワタ式ジャンプ',
+        personality: {
+            attackLine: '＼(^o^)／',
+            feintLine: 'オワタ？',
+            chargeLine: 'オワ...'
+        },
+        uniqueTrait: {
+            name: '起死回生',
+            description: 'HP20%以下で攻撃力+100%',
+            type: 'desperate'
+        },
+        themeColor: '#607d8b',
+        themeImage: 'https://picsum.photos/seed/owata-despair/800/600?grayscale&blur=2'
+    },
+
+    woman_cat: {
+        id: 'woman_cat',
+        name: '指さし論争',
+        displayName: '指さし論争',
+        avatar: '👈',
+        description: '女性と猫の対峙',
+        tags: ['海外', 'ネタ', '万能'],
+        basePower: 21,
+        baseHP: 90,
+        flavorWin: '論破完了！',
+        flavorLose: '言い返せなかった...',
+        catchphrase: '*points finger*',
+        lore: '女性が指をさして叫ぶ画像と、混乱した猫の組み合わせ。無限のキャプション素材として世界中で使われる。',
+        signatureMove: '論点ずらし',
+        personality: {
+            attackLine: '*指さし*',
+            feintLine: '*困惑*',
+            chargeLine: '*準備中*'
+        },
+        uniqueTrait: {
+            name: '論破',
+            description: 'フェイント後の攻撃が+50%',
+            type: 'debate_combo'
+        },
+        themeColor: '#e91e63',
+        themeImage: 'https://picsum.photos/seed/woman-cat-argue/800/600?blur=2'
+    },
+
+    coffin: {
+        id: 'coffin',
+        name: 'Coffin Dance',
+        displayName: 'Coffin Dance',
+        avatar: '⚰️',
+        description: '陽気な葬式ダンス',
+        tags: ['音楽', '海外', 'ネタ'],
+        basePower: 28,
+        baseHP: 85,
+        flavorWin: 'Astronomia♪ 勝利の舞！',
+        flavorLose: '棺桶に入れられた...',
+        catchphrase: '*coffin dance music*',
+        lore: 'ガーナの葬式で棺を担いで踊る映像。失敗シーンの締めBGMとして世界的に流行し、あらゆる場面で使われた。',
+        signatureMove: '葬送ダンス',
+        personality: {
+            attackLine: '*dance*',
+            feintLine: '*dodge*',
+            chargeLine: '*準備*'
+        },
+        uniqueTrait: {
+            name: '葬送',
+            description: '敵HP50%以下で攻撃力+40%',
+            type: 'finisher'
+        },
+        themeColor: '#9c27b0',
+        themeImage: 'https://picsum.photos/seed/coffin-dance/800/600?blur=2'
+    },
+
+    wojak: {
+        id: 'wojak',
+        name: 'Feels顔',
+        displayName: 'Feels顔',
+        avatar: '😢',
+        description: '感情の化身',
+        tags: ['海外', '哲学', 'AA'],
+        basePower: 19,
+        baseHP: 100,
+        flavorWin: 'I know that feel bro',
+        flavorLose: 'tfw you lose...',
+        catchphrase: 'I know that feel',
+        lore: 'シンプルな悲しい顔のAAから、無数のバリエーションを生んだ感情表現ミーム。喜怒哀楽すべてを表現する。',
+        signatureMove: 'feels attack',
+        personality: {
+            attackLine: 'feels bad',
+            feintLine: 'tfw',
+            chargeLine: 'that feel when...'
+        },
+        uniqueTrait: {
+            name: '共感',
+            description: '敵が鮮度50%以下の時、ダメージ+30%',
+            type: 'empathy_damage'
+        },
+        themeColor: '#9e9e9e',
+        themeImage: 'https://picsum.photos/seed/wojak-feels/800/600?grayscale&blur=3'
+    },
+
+    success_kid: {
+        id: 'success_kid',
+        name: '成功キッズ',
+        displayName: '成功キッズ',
+        avatar: '👶',
+        description: 'ガッツポーズの赤ちゃん',
+        tags: ['海外', '万能', 'ネタ'],
+        basePower: 22,
+        baseHP: 95,
+        flavorWin: 'Success! ガッツポーズ！',
+        flavorLose: 'not success...',
+        catchphrase: '*fist pump*',
+        lore: 'ビーチで砂を握りしめてガッツポーズする赤ちゃん。成功体験や小さな勝利を祝う定番ミームとして定着。',
+        signatureMove: 'ガッツポーズ',
+        personality: {
+            attackLine: 'yes!',
+            feintLine: 'nailed it',
+            chargeLine: 'gonna do it...'
+        },
+        uniqueTrait: {
+            name: '成功体験',
+            description: '攻撃成功時、次ターン攻撃力+8',
+            type: 'success_buff'
+        },
+        themeColor: '#ffeb3b',
+        themeImage: 'https://picsum.photos/seed/success-kid/800/600?blur=2'
+    },
+
+    distracted: {
+        id: 'distracted',
+        name: '気が散る構図',
+        displayName: '気が散る構図',
+        avatar: '👀',
+        description: '三角関係の視線',
+        tags: ['海外', 'ネタ', '万能'],
+        basePower: 20,
+        baseHP: 90,
+        flavorWin: '本命で勝利！',
+        flavorLose: '浮気心が災いした...',
+        catchphrase: '*looks away*',
+        lore: '彼女がいるのに他の女性を見る男性の写真。選択と誘惑のメタファーとして、あらゆる比較ネタで使われる。',
+        signatureMove: '二股攻撃',
+        personality: {
+            attackLine: '*glance*',
+            feintLine: '*look away*',
+            chargeLine: '*torn*'
+        },
+        uniqueTrait: {
+            name: '二択',
+            description: 'ランダムで攻撃対象切り替え（味方含む）',
+            type: 'random_target'
+        },
+        themeColor: '#03a9f4',
+        themeImage: 'https://picsum.photos/seed/distracted-boyfriend/800/600?blur=2'
+    },
+
+    knuckles: {
+        id: 'knuckles',
+        name: 'ソニックファン',
+        displayName: 'ソニックファン',
+        avatar: '🦔',
+        description: 'VRChat発のミーム',
+        tags: ['ゲーム', '海外', 'ネタ'],
+        basePower: 25,
+        baseHP: 85,
+        flavorWin: 'Do you know the way to victory!',
+        flavorLose: 'Lost the way...',
+        catchphrase: 'Do you know the way?',
+        lore: 'VRChatでハリネズミキャラが集団行動するミーム。独特の口調と行動パターンで一世を風靡した。',
+        signatureMove: 'クリック音連打',
+        personality: {
+            attackLine: 'click click click',
+            feintLine: 'spit on him',
+            chargeLine: 'show me da way...'
+        },
+        uniqueTrait: {
+            name: '群れ',
+            description: '攻撃時25%で2回攻撃',
+            type: 'swarm'
+        },
+        themeColor: '#f44336',
+        themeImage: 'https://picsum.photos/seed/knuckles-sonic/800/600?blur=2'
+    },
+
+    npc: {
+        id: 'npc',
+        name: 'NPC顔',
+        displayName: 'NPC顔',
+        avatar: '🤖',
+        description: 'グレイフェイス',
+        tags: ['海外', 'ネタ', '不気味'],
+        basePower: 18,
+        baseHP: 100,
+        flavorWin: '*automatic response* victory',
+        flavorLose: '*shutdown*',
+        catchphrase: '*NPC dialogue*',
+        lore: '感情のない無表情な顔。考えない人間をNPCに例える皮肉なミームとして使われ、議論を呼んだ。',
+        signatureMove: 'テンプレ応答',
+        personality: {
+            attackLine: '*beep boop*',
+            feintLine: '*scripted response*',
+            chargeLine: '*loading*'
+        },
+        uniqueTrait: {
+            name: 'プログラム',
+            description: '同じコマンドを3回繰り返すと威力2倍',
+            type: 'pattern'
+        },
+        themeColor: '#9e9e9e',
+        themeImage: 'https://picsum.photos/seed/npc-gray/800/600?grayscale&blur=3'
     }
 };
 
@@ -601,18 +854,26 @@ const ALL_TAGS = ['古典', 'AA', '語録', '圧倒', '突撃', '即応', 'ネ�
 
 // ネットイベントプール
 const NET_EVENTS = [
-    { id: 'thread_flow', name: 'スレが流れた', effect: 'freshness_down', value: 8, prob: 0.15, message: '💨 スレが流れた！両者の鮮度-8！' },
-    { id: 'troll', name: '荒らし乱入', effect: 'random_damage', value: 15, prob: 0.12, message: '👹 荒らしが乱入！ランダムで15ダメージ！' },
-    { id: 'bait', name: '釣りだった', effect: 'hp_swap', value: 0, prob: 0.08, message: '🎣 釣りだった！HP差が縮まる！' },
-    { id: 'warota_chain', name: 'ワロタ連鎖', effect: 'both_heal', value: 10, prob: 0.15, message: '😂 ワロタ連鎖！両者HP+10回復！www' },
-    { id: 'nullpo_gat', name: 'ぬるぽ→ガッ', effect: 'quick_damage', value: 12, prob: 0.10, message: '💥 ぬるぽ→ガッ！即座に12ダメージ！' },
-    { id: 'rickroll', name: '釣りリンク', effect: 'confusion', value: 0, prob: 0.10, message: '🎵 ♪Never gonna give you up... 次ターン混乱！' },
-    { id: 'server_down', name: '鯖落ち', effect: 'skip_turn', value: 0, prob: 0.08, message: '💀 鯖落ち！このターンスキップ！' },
-    { id: 'aa_broken', name: 'AA崩壊', effect: 'freshness_chaos', value: 15, prob: 0.10, message: '📝 AA崩壊！鮮度大混乱！' },
-    { id: 'ratio', name: 'ratio喰らった', effect: 'debuff', value: 5, prob: 0.12, message: '💬 ratio喰らった！次ターン攻撃力-5！L + cope' },
-    { id: 'based', name: 'based認定', effect: 'buff', value: 10, prob: 0.12, message: '😎 based認定された！次ターン攻撃力+10！' },
-    { id: 'skill_issue', name: 'skill issue', effect: 'mock', value: 0, prob: 0.10, message: '🤷 skill issue指摘！気にするな（鮮度-5）' },
-    { id: 'ping_death', name: 'ping999ms', effect: 'slow', value: 0, prob: 0.08, message: '🌐 ping999ms！動きが鈍い！次ターンダメージ半減' }
+    { id: 'thread_flow', name: 'スレが流れた', effect: 'freshness_down', value: 8, prob: 0.15, message: '💨 スレが流れた！両者の鮮度-8！', chain: 'dat_fall' },
+    { id: 'troll', name: '荒らし乱入', effect: 'random_damage', value: 15, prob: 0.12, message: '👹 荒らしが乱入！ランダムで15ダメージ！', chain: 'server_down' },
+    { id: 'bait', name: '釣りだった', effect: 'hp_swap', value: 0, prob: 0.08, message: '🎣 釣りだった！HP差が縮まる！', chain: 'rickroll' },
+    { id: 'warota_chain', name: 'ワロタ連鎖', effect: 'both_heal', value: 10, prob: 0.15, message: '😂 ワロタ連鎖！両者HP+10回復！www', chain: 'grass_grow' },
+    { id: 'nullpo_gat', name: 'ぬるぽ→ガッ', effect: 'quick_damage', value: 12, prob: 0.10, message: '💥 ぬるぽ→ガッ！即座に12ダメージ！', chain: null },
+    { id: 'rickroll', name: '釣りリンク', effect: 'confusion', value: 0, prob: 0.10, message: '🎵 ♪Never gonna give you up... 次ターン混乱！', chain: null },
+    { id: 'server_down', name: '鯖落ち', effect: 'skip_turn', value: 0, prob: 0.08, message: '💀 鯖落ち！このターンスキップ！', chain: null },
+    { id: 'aa_broken', name: 'AA崩壊', effect: 'freshness_chaos', value: 15, prob: 0.10, message: '📝 AA崩壊！鮮度大混乱！', chain: null },
+    { id: 'ratio', name: 'ratio喰らった', effect: 'debuff', value: 5, prob: 0.12, message: '💬 ratio喰らった！次ターン攻撃力-5！L + cope', chain: 'pile_on' },
+    { id: 'based', name: 'based認定', effect: 'buff', value: 10, prob: 0.12, message: '😎 based認定された！次ターン攻撃力+10！', chain: null },
+    { id: 'skill_issue', name: 'skill issue', effect: 'mock', value: 0, prob: 0.10, message: '🤷 skill issue指摘！気にするな（鮮度-5）', chain: null },
+    { id: 'ping_death', name: 'ping999ms', effect: 'slow', value: 0, prob: 0.08, message: '🌐 ping999ms！動きが鈍い！次ターンダメージ半減', chain: null },
+    { id: 'dat_fall', name: 'dat落ち', effect: 'panic', value: 0, prob: 0, message: '📂 dat落ち！完全に消えた！HP-20', chain: null },
+    { id: 'grass_grow', name: '草生える', effect: 'grass', value: 0, prob: 0, message: '🌱 wwwwwwww 草生えた！攻撃力+5', chain: null },
+    { id: 'pile_on', name: '便乗叩き', effect: 'pile', value: 10, prob: 0, message: '📢 便乗叩きの嵐！追加10ダメージ！', chain: null },
+    { id: 'sage', name: 'sage進行', effect: 'stealth', value: 0, prob: 0.08, message: '🤫 sage進行...鮮度消費なし', chain: null },
+    { id: 'age', name: 'age荒らし', effect: 'expose', value: 0, prob: 0.08, message: '📣 age荒らし！鮮度-10', chain: null },
+    { id: 'copy_paste', name: 'コピペ爆撃', effect: 'spam', value: 0, prob: 0.10, message: '📋 コピペ爆撃！混乱！', chain: null },
+    { id: 'bot_spam', name: 'bot荒らし', effect: 'bot', value: 0, prob: 0.08, message: '🤖 bot大量発生！HP-8', chain: null },
+    { id: 'flame_war', name: '炎上', effect: 'flame', value: 0, prob: 0.10, message: '🔥 炎上！全員ダメージ-12', chain: 'troll' }
 ];
 
 // 配信風アイテム

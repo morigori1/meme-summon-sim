@@ -965,6 +965,37 @@
             50% { filter: brightness(3) saturate(2); }
         }
 
+        /* 配信アイテムボタン */
+        .stream-item-button {
+            padding: 12px 8px;
+            font-size: 1em;
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.3) 0%, rgba(255, 100, 0, 0.3) 100%);
+            border: 2px solid #ffaa00;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .stream-item-button:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 170, 0, 0.5);
+            border-color: #ffcc00;
+        }
+
+        .stream-item-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        .stream-item-button.used {
+            background: rgba(100, 100, 100, 0.3);
+            border-color: #666;
+        }
+
         .qte-timer {
             font-size: 1.5em;
             color: #ff3366;
@@ -1112,6 +1143,24 @@
                     </button>
                     <button class="command-button" data-command="charge">
                         チャージ<br><small>次ターン強化</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="stream-items-panel" style="background: rgba(255, 170, 0, 0.15); padding: 15px; border-radius: 10px; margin-top: 15px; border: 2px solid rgba(255, 170, 0, 0.5);">
+                <h3 style="text-align: center; color: #ffaa00; margin-bottom: 10px;">配信アイテム（各1回のみ）</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <button class="stream-item-button" id="item-superchat" data-item="superchat">
+                        💵 スパチャ<br><small>HP+20</small>
+                    </button>
+                    <button class="stream-item-button" id="item-amagift" data-item="amagift">
+                        🎁 あまぎふ<br><small>攻撃+15</small>
+                    </button>
+                    <button class="stream-item-button" id="item-hakushu" data-item="hakushu">
+                        👏 拍手〇<br><small>鮮度+20</small>
+                    </button>
+                    <button class="stream-item-button" id="item-stamp" data-item="stamp">
+                        🎭 スタンプ<br><small>敵混乱</small>
                     </button>
                 </div>
             </div>
