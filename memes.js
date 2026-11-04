@@ -845,6 +845,287 @@ const MEME_DATABASE = {
         },
         themeColor: '#9e9e9e',
         themeImage: 'https://picsum.photos/seed/npc-gray/800/600?grayscale&blur=3'
+    },
+
+    yaruo: {
+        id: 'yaruo',
+        name: 'やる夫',
+        displayName: 'やる夫',
+        avatar: '( ´∀｀)',
+        description: '無敵の主人公',
+        tags: ['AA', 'ネタ', '万能'],
+        basePower: 27,
+        baseHP: 110,
+        flavorWin: 'やる夫は勝ったお！',
+        flavorLose: 'やる夫は負けたお...',
+        catchphrase: 'やるお！',
+        lore: '2chを代表するAA主人公。無数のスレで様々な役を演じ、最も汎用性の高いキャラとして君臨した。',
+        signatureMove: 'やる夫スマッシュ',
+        personality: {
+            attackLine: 'いくお！',
+            feintLine: 'かわすお！',
+            chargeLine: 'ためるお...'
+        },
+        uniqueTrait: {
+            name: '主人公補正',
+            description: 'HP50%以下で全能力+25%',
+            type: 'protagonist'
+        },
+        themeColor: '#ffdd57',
+        themeImage: 'https://picsum.photos/seed/yaruo-hero/800/600?blur=2'
+    },
+
+    mona: {
+        id: 'mona',
+        name: 'モナー',
+        displayName: 'モナー',
+        avatar: '( ´∀｀)',
+        description: '2chの象徴',
+        tags: ['AA', '伝説', '古参'],
+        basePower: 25,
+        baseHP: 105,
+        flavorWin: 'モララー！勝利だモナ',
+        flavorLose: 'オマエモナー...',
+        catchphrase: 'モナー',
+        lore: '2ch黎明期から存在するマスコット的存在。のまネコ騒動など、数々の事件を経験してきた生き証人。',
+        signatureMove: 'モナーアタック',
+        personality: {
+            attackLine: 'モナ！',
+            feintLine: 'モナー？',
+            chargeLine: 'モナ...'
+        },
+        uniqueTrait: {
+            name: 'レジェンド',
+            description: '古参タグの戦場で攻撃力+30%',
+            type: 'battlefield_bonus',
+            targetTag: '古参'
+        },
+        themeColor: '#ff9800',
+        themeImage: 'https://picsum.photos/seed/mona-legend/800/600?blur=2'
+    },
+
+    matome: {
+        id: 'matome',
+        name: 'まとめブログ',
+        displayName: 'まとめブログ',
+        avatar: '📰',
+        description: '情報拡散の起点',
+        tags: ['ネタ', 'メタ', '万能'],
+        basePower: 20,
+        baseHP: 95,
+        flavorWin: 'まとめで拡散！大勝利！',
+        flavorLose: 'まとめられなかった...',
+        catchphrase: '【速報】',
+        lore: '2chのスレをまとめて拡散する文化。ミームの伝播速度を飛躍的に高め、ネット文化の形を変えた。',
+        signatureMove: 'まとめ拡散',
+        personality: {
+            attackLine: '【朗報】',
+            feintLine: '【悲報】',
+            chargeLine: '【速報】'
+        },
+        uniqueTrait: {
+            name: '拡散',
+            description: 'ダメージを与えると敵の鮮度も-5',
+            type: 'spread'
+        },
+        themeColor: '#2196f3',
+        themeImage: 'https://picsum.photos/seed/matome-blog/800/600?blur=2'
+    },
+
+    inmu: {
+        id: 'inmu',
+        name: '淫夢語録',
+        displayName: '淫夢語録',
+        avatar: '💬',
+        description: '汎用性の暴力',
+        tags: ['ネタ', '万能', 'メタ'],
+        basePower: 26,
+        baseHP: 90,
+        flavorWin: '勝ちましたわ（勝利）',
+        flavorLose: 'あっ...（察し）',
+        catchphrase: 'あのさぁ...',
+        lore: '野獣先輩から派生した語録群。あらゆる場面で使える汎用性と、独特のリズムでネット全域に浸透した。',
+        signatureMove: '語録返し',
+        personality: {
+            attackLine: 'いいよ、来いよ！',
+            feintLine: 'ちょっと待って！',
+            chargeLine: 'んっ...'
+        },
+        uniqueTrait: {
+            name: '汎用性',
+            description: 'すべてのコマンドで+10%ダメージ',
+            type: 'versatile'
+        },
+        themeColor: '#ff5722',
+        themeImage: 'https://picsum.photos/seed/inmu-quotes/800/600?blur=3'
+    },
+
+    kusanagi: {
+        id: 'kusanagi',
+        name: 'ネット草原',
+        displayName: 'ネット草原',
+        avatar: '🌿',
+        description: 'wwwwwww',
+        tags: ['ネタ', '万能', 'メタ'],
+        basePower: 15,
+        baseHP: 120,
+        flavorWin: 'wwwwwwwwww勝ったwwww',
+        flavorLose: 'wwww（涙目）',
+        catchphrase: 'wwwwwwwwww',
+        lore: '(笑)→w→草→草不可避。笑いを表現する記号が進化を遂げ、ついには草原と呼ばれるようになった。',
+        signatureMove: '大草原不可避',
+        personality: {
+            attackLine: 'wwwwww',
+            feintLine: 'www',
+            chargeLine: 'w'
+        },
+        uniqueTrait: {
+            name: '草生える',
+            description: '攻撃を受けると10%でHP+5回復',
+            type: 'grass_heal'
+        },
+        themeColor: '#4caf50',
+        themeImage: 'https://picsum.photos/seed/grass-field/800/600?blur=2'
+    },
+
+    harlem: {
+        id: 'harlem',
+        name: 'Harlem Shake',
+        displayName: 'Harlem Shake',
+        avatar: '🕺',
+        description: '突然の狂乱',
+        tags: ['海外', '音楽', 'ネタ'],
+        basePower: 29,
+        baseHP: 85,
+        flavorWin: '*bass drop* VICTORY!',
+        flavorLose: '*dance interrupted*',
+        catchphrase: 'Do the Harlem Shake!',
+        lore: '突然のベースドロップとともに全員が踊り狂う。2013年に世界中で爆発的に流行し、無数の動画が投稿された。',
+        signatureMove: 'Bass Drop',
+        personality: {
+            attackLine: '*dance*',
+            feintLine: '*shake*',
+            chargeLine: '*準備中*'
+        },
+        uniqueTrait: {
+            name: '狂乱',
+            description: 'ターン開始時15%で全体HP-5',
+            type: 'chaos_aura'
+        },
+        themeColor: '#ff6f00',
+        themeImage: 'https://picsum.photos/seed/harlem-shake/800/600?blur=2'
+    },
+
+    trollface: {
+        id: 'trollface',
+        name: 'Troll Face',
+        displayName: 'Troll Face',
+        avatar: '😈',
+        description: '荒らしの化身',
+        tags: ['海外', 'ネタ', '不気味'],
+        basePower: 24,
+        baseHP: 100,
+        flavorWin: 'Problem? U mad bro?',
+        flavorLose: 'You got trolled...',
+        catchphrase: 'Problem?',
+        lore: 'MSペイントで描かれた不気味な笑顔。荒らし行為やイタズラを象徴するミームとして定着した。',
+        signatureMove: 'トローリング',
+        personality: {
+            attackLine: 'U mad?',
+            feintLine: 'Problem?',
+            chargeLine: 'Umad...'
+        },
+        uniqueTrait: {
+            name: 'トロール',
+            description: '敵の攻撃を15%で無効化',
+            type: 'troll_dodge'
+        },
+        themeColor: '#9e9e9e',
+        themeImage: 'https://picsum.photos/seed/troll-face/800/600?grayscale&blur=2'
+    },
+
+    forever_alone: {
+        id: 'forever_alone',
+        name: 'Forever Alone',
+        displayName: 'Forever Alone',
+        avatar: '😭',
+        description: '孤独の権化',
+        tags: ['海外', 'ネタ', '哲学'],
+        basePower: 16,
+        baseHP: 130,
+        flavorWin: 'Not alone anymore!',
+        flavorLose: 'Forever alone...',
+        catchphrase: 'Forever alone...',
+        lore: '孤独を表現するシンプルな顔。一人でいる寂しさや虚しさを象徴し、多くの共感を集めた。',
+        signatureMove: '孤独の力',
+        personality: {
+            attackLine: 'alone...',
+            feintLine: 'lonely...',
+            chargeLine: 'nobody...'
+        },
+        uniqueTrait: {
+            name: '孤独',
+            description: '残りHP1でも必ず1ターン生き残る',
+            type: 'endure'
+        },
+        themeColor: '#607d8b',
+        themeImage: 'https://picsum.photos/seed/forever-alone/800/600?grayscale&blur=3'
+    },
+
+    yuno: {
+        id: 'yuno',
+        name: 'Y U No',
+        displayName: 'Y U No',
+        avatar: '😠',
+        description: '怒りの疑問符',
+        tags: ['海外', 'ネタ', '万能'],
+        basePower: 22,
+        baseHP: 95,
+        flavorWin: 'Y U NO LOSE!?',
+        flavorLose: 'Y U NO WIN...',
+        catchphrase: 'Y U NO...!?',
+        lore: '怒った顔で「なぜ〜しないんだ！？」と問い詰める。あらゆる不満や疑問を表現できる汎用性の高さが魅力。',
+        signatureMove: '問い詰め',
+        personality: {
+            attackLine: 'Y U NO DIE!?',
+            feintLine: 'Y U NO STOP!?',
+            chargeLine: 'Y U NO...'
+        },
+        uniqueTrait: {
+            name: '問い詰め',
+            description: '敵が回避すると次ターン攻撃+15',
+            type: 'rage_stack'
+        },
+        themeColor: '#f44336',
+        themeImage: 'https://picsum.photos/seed/y-u-no/800/600?blur=2'
+    },
+
+    harold: {
+        id: 'harold',
+        name: 'Hide the Pain',
+        displayName: 'Hide the Pain Harold',
+        avatar: '😅',
+        description: '痛みを隠す笑顔',
+        tags: ['海外', 'ネタ', '哲学'],
+        basePower: 21,
+        baseHP: 105,
+        flavorWin: '*smiles through pain* Victory!',
+        flavorLose: '*pain intensifies*',
+        catchphrase: '*smiles nervously*',
+        lore: 'ストックフォトのおじさんの無理な笑顔。辛いことがあっても笑顔でいる社会人の心情を代弁した。',
+        signatureMove: '強がり',
+        personality: {
+            attackLine: '*smiles*',
+            feintLine: '*nervous laugh*',
+            chargeLine: '*hides pain*'
+        },
+        uniqueTrait: {
+            name: '痛み隠し',
+            description: '被ダメージの25%を次ターン攻撃に転換',
+            type: 'pain_convert'
+        },
+        themeColor: '#ff9800',
+        themeImage: 'https://picsum.photos/seed/harold-pain/800/600?blur=2'
     }
 };
 
@@ -937,11 +1218,110 @@ function calculateDamage(attacker, defender, battlefieldTags, chargeMultiplier =
     };
 }
 
+// ボスMEMEデータベース
+const BOSS_DATABASE = {
+    thread_master: {
+        id: 'thread_master',
+        name: '伝説のスレ主',
+        displayName: '伝説のスレ主',
+        avatar: '👑',
+        description: '1000スレを超えた伝説',
+        tags: ['伝説', 'ネタ', '万能'],
+        basePower: 35,
+        baseHP: 150,
+        flavorWin: 'スレ立て完了。お疲れ様でした',
+        flavorLose: 'スレが落ちた...',
+        catchphrase: '1000スレ達成',
+        lore: '数千スレを立て続け、無数の名言を生み出した伝説のスレ主。ネット世論を動かす力を持つ。',
+        signatureMove: '伝説スレ乱立',
+        personality: {
+            attackLine: '次スレ立てます',
+            feintLine: 'スレ保守',
+            chargeLine: 'スレ立て準備中'
+        },
+        uniqueTrait: {
+            name: 'カリスマ',
+            description: '毎ターン攻撃力+3',
+            type: 'boss_charisma'
+        },
+        themeColor: '#ffd700',
+        themeImage: 'https://picsum.photos/seed/thread-master-boss/800/600?blur=2'
+    },
+    
+    troll_king: {
+        id: 'troll_king',
+        name: '荒らし王',
+        displayName: '荒らし王',
+        avatar: '👹',
+        description: 'あらゆるスレを荒廃させる',
+        tags: ['ネタ', '不気味', '万能'],
+        basePower: 38,
+        baseHP: 140,
+        flavorWin: 'このスレ終了ｗｗｗ',
+        flavorLose: 'BANされた...',
+        catchphrase: '荒らすぞ〜',
+        lore: '荒らしの頂点に立つ存在。IP変えてでも荒らし続ける執念と技術を持つ。',
+        signatureMove: '無差別荒らし',
+        personality: {
+            attackLine: 'ｗｗｗｗｗ',
+            feintLine: 'IP変更',
+            chargeLine: '荒らし準備'
+        },
+        uniqueTrait: {
+            name: '荒廃',
+            description: '攻撃時、敵の鮮度を追加で-10',
+            type: 'boss_devastate'
+        },
+        themeColor: '#d32f2f',
+        themeImage: 'https://picsum.photos/seed/troll-king-boss/800/600?blur=3'
+    },
+    
+    meme_god: {
+        id: 'meme_god',
+        name: 'ミーム神',
+        displayName: 'ミーム神',
+        avatar: '🌌',
+        description: 'すべてのミームを統べる',
+        tags: ['伝説', '哲学', 'メタ'],
+        basePower: 42,
+        baseHP: 180,
+        flavorWin: '新たなミームが生まれた',
+        flavorLose: 'ミームは進化し続ける...',
+        catchphrase: 'I am the meme',
+        lore: 'すべてのミームの起源にして終着点。文化の伝播と変異を司る概念的存在。',
+        signatureMove: 'ミーム創造',
+        personality: {
+            attackLine: '進化せよ',
+            feintLine: '変異せよ',
+            chargeLine: '創造の時'
+        },
+        uniqueTrait: {
+            name: '創造神',
+            description: '全属性のタグと一致',
+            type: 'boss_omnipotent'
+        },
+        themeColor: '#9c27b0',
+        themeImage: 'https://picsum.photos/seed/meme-god-boss/800/600?blur=2'
+    }
+};
+
 // ランダムな敵ミームを選択
-function selectRandomEnemy(playerMeme) {
+function selectRandomEnemy(playerMeme, isBoss = false, bossType = null) {
+    if (isBoss && bossType && BOSS_DATABASE[bossType]) {
+        return BOSS_DATABASE[bossType];
+    }
+    
     const allMemes = Object.values(MEME_DATABASE);
     const availableEnemies = allMemes.filter(m => m.id !== playerMeme.id);
     return availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+}
+
+// ボス戦判定
+function shouldSpawnBoss(stageNumber) {
+    if (stageNumber === 3) return 'thread_master';
+    if (stageNumber === 5) return 'troll_king';
+    if (stageNumber === 10) return 'meme_god';
+    return null;
 }
 
 // 戦場テーマ画像のシード

@@ -55,6 +55,9 @@ class MemeRitualBattle {
         // 戦況ログ（スレまとめ用）
         this.battleLog = [];
         
+        // 連勝称号
+        this.currentTitle = 'ネット初心者';
+        
         // Web Audio初期化（オプション）
         this.initAudio();
     }
@@ -375,7 +378,29 @@ class MemeRitualBattle {
         step.textContent = '【第二段階】詠唱開始...';
         gaugeFill.style.width = '66%';
         this.playTone(400, 0.4, 0.12);
+        
+        // 詠唱テキスト表示
+        const chantTexts = [
+            'いにしえのネット海より、我が許に来たれ...',
+            'バズりし者よ、今ここに現れん...',
+            'ログ流れども、残りし記憶、今ここに...',
+            '拡散せし力、我が魂に宿れ...',
+            '炎上せし者、我が呼びかけに応えよ...',
+            'サーバーの彼方より、降臨せよ...',
+            'スレ落ちせず、永久保存、今此処に...',
+            'ミームの海より、選ばれし者よ...'
+        ];
+        const selectedChant = chantTexts[Math.floor(Math.random() * chantTexts.length)];
+        
+        // 一時的に詠唱テキストを表示
+        const originalStepText = step.textContent;
+        step.textContent = `📿 ${selectedChant}`;
+        step.style.fontSize = '1.1em';
+        step.style.color = '#00ff88';
         await this.wait(1200);
+        step.style.fontSize = '1.3em';
+        step.style.color = '#fff';
+        step.textContent = originalStepText;
         
         // ステップ3: QTE
         step.textContent = '【第三段階】力の集中！';
@@ -1021,7 +1046,8 @@ class MemeRitualBattle {
                     <p style="margin-top: 15px;">
                         ${this.playerMeme.displayName}が${this.enemyMeme.displayName}を制した！<br>
                         残りHP: ${Math.max(0, this.playerMeme.hp)} / 鮮度: ${Math.max(0, this.playerMeme.freshness)}%<br>
-                        <strong style="color: #ffaa00;">連勝: ${this.continuousWins}回</strong>
+                        <strong style="color: #ffaa00;">連勝: ${this.continuousWins}回</strong><br>
+                        <strong style="color: #00ff88;">称号: ${this.currentTitle}</strong>
                     </p>
                     ${threadSummary}
                     <button id="continueButton" style="margin-top: 20px; padding: 15px 40px; font-size: 1.2em; background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer;">
@@ -1092,19 +1118,39 @@ class MemeRitualBattle {
         return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
     }
     
+    updateTitle() {
+        const wins = this.continuousWins;
+        if (wins >= 15) this.currentTitle = 'ネット神';
+        else if (wins >= 10) this.currentTitle = 'ミーム支配者';
+        else if (wins >= 8) this.currentTitle = '伝説のコテハン';
+        else if (wins >= 5) this.currentTitle = '有名固定';
+        else if (wins >= 3) this.currentTitle = '古参住民';
+        else if (wins >= 2) this.currentTitle = '半年ROMった';
+        else if (wins >= 1) this.currentTitle = '新参';
+        else this.currentTitle = 'ネット初心者';
+    }
+
     async continueToNextStage() {
         this.stageNumber++;
+        
+        // 称号更新
+        this.updateTitle();
         
         // 新しい戦場生成
         this.battlefield = generateRandomBattlefield();
         
+        // ボス戦判定
+        const bossType = shouldSpawnBoss(this.stageNumber);
+        const isBoss = !!bossType;
+        
         // 新しい敵召喚
-        const enemyTemplate = selectRandomEnemy(this.playerMeme);
+        const enemyTemplate = selectRandomEnemy(this.playerMeme, isBoss, bossType);
         this.enemyMeme = {
             ...enemyTemplate,
             hp: enemyTemplate.baseHP + (this.stageNumber - 1) * 10, // ステージごとに強化
             maxHP: enemyTemplate.baseHP + (this.stageNumber - 1) * 10,
-            freshness: 100
+            freshness: 100,
+            isBoss: isBoss
         };
         
         // プレイヤーの一部回復
@@ -1137,8 +1183,20 @@ class MemeRitualBattle {
         
         document.getElementById('battleLog').innerHTML = '';
         this.log(`━━━ Stage ${this.stageNumber} 開始！ ━━━`, 'system');
+        
+        if (isBoss) {
+            this.log(`👑 【BOSS BATTLE】 👑`, 'damage');
+            this.playChord([400, 500, 600], 0.3, 0.15);
+        }
+        
         this.log(`${this.playerMeme.displayName} VS ${this.enemyMeme.displayName}`);
+        this.log(`称号：${this.currentTitle}`, 'context-bonus');
         this.log(`戦場：${this.battlefield.name}`);
+        
+        if (isBoss) {
+            this.log(`${this.enemyMeme.lore}`, 'damage');
+        }
+        
         this.log(`敵が強化されている！（HP+${(this.stageNumber - 1) * 10}）`, 'damage');
         
         this.setCommandButtonsEnabled(true);
@@ -1349,6 +1407,86 @@ class MemeRitualBattle {
                         this.log('*scripted response* プログラム完了！', 'context-bonus');
                         return damage * 2;
                     }
+                }
+                break;
+                
+            case 'protagonist':
+                // やる夫: HP50%以下で全能力+25%
+                if (meme.id === 'yaruo' && meme.hp <= meme.maxHP * 0.5) {
+                    this.log('やる夫の主人公補正！', 'context-bonus');
+                    return Math.floor(damage * 1.25);
+                }
+                break;
+                
+            case 'versatile':
+                // 淫夢語録: すべてのコマンドで+10%
+                if (meme.id === 'inmu') {
+                    return Math.floor(damage * 1.1);
+                }
+                break;
+                
+            case 'grass_heal':
+                // ネット草原: 攻撃を受けると10%でHP+5
+                if (side !== 'player' && action === 'defend' && Math.random() < 0.1) {
+                    meme.hp = Math.min(meme.maxHP, meme.hp + 5);
+                    this.log('草生えてHP回復！', 'context-bonus');
+                }
+                break;
+                
+            case 'troll_dodge':
+                // Troll Face: 敵の攻撃を15%で無効化
+                if (action === 'defend' && Math.random() < 0.15) {
+                    this.log('Problem? トロール回避！', 'context-bonus');
+                    return 0; // ダメージ無効化のマーカー
+                }
+                break;
+                
+            case 'endure':
+                // Forever Alone: 残りHP1でも必ず1ターン生き残る
+                if (meme.id === 'forever_alone' && meme.hp <= 1) {
+                    this.log('Forever alone...but not dead yet', 'context-bonus');
+                    meme.hp = 1;
+                }
+                break;
+                
+            case 'pain_convert':
+                // Harold: 被ダメージの25%を次ターン攻撃に転換
+                if (action === 'defend' && meme.id === 'harold') {
+                    const buff = Math.floor(damage * 0.25);
+                    if (side === 'player') {
+                        this.playerBuffs.attack += buff;
+                    } else {
+                        this.enemyBuffs.attack += buff;
+                    }
+                    this.log('痛みを力に変えた！', 'context-bonus');
+                }
+                break;
+                
+            // ボス特性
+            case 'boss_charisma':
+                // 伝説のスレ主: 毎ターン攻撃力+3
+                if (meme.id === 'thread_master') {
+                    if (side === 'enemy') {
+                        this.enemyBuffs.attack += 3;
+                    }
+                    this.log('スレ主のカリスマ！攻撃力上昇', 'damage');
+                }
+                break;
+                
+            case 'boss_devastate':
+                // 荒らし王: 攻撃時、敵の鮮度を追加で-10
+                if (action === 'attack' && meme.id === 'troll_king') {
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    target.freshness = Math.max(0, target.freshness - 10);
+                    this.log('荒廃の力！鮮度低下', 'damage');
+                }
+                break;
+                
+            case 'boss_omnipotent':
+                // ミーム神: 全属性のタグと一致（常に最大ボーナス）
+                if (meme.id === 'meme_god') {
+                    this.log('ミーム神の全能！', 'context-bonus');
+                    return Math.floor(damage * 1.5);
                 }
                 break;
                 
