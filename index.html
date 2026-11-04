@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ミーム召喚儀式バトル</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MS Gothic', 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ff88;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .phase-indicator {
+            text-align: center;
+            font-size: 1.2em;
+            color: #ffaa00;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255, 170, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .ritual-phase, .battle-phase, .result-phase {
+            display: none;
+        }
+
+        .ritual-phase.active, .battle-phase.active, .result-phase.active {
+            display: block;
+        }
+
+        .battlefield-context {
+            background: rgba(255, 170, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .battlefield-context h3 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+
+        .context-tags {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .context-tag {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: 1px solid #00ff88;
+            font-size: 0.9em;
+        }
+
+        .ingredient-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ingredient-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ingredient-card:hover {
+            border-color: #00ff88;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .ingredient-card.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.15);
+        }
+
+        .ingredient-card h4 {
+            color: #00ff88;
+            margin-bottom: 8px;
+        }
+
+        .ingredient-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .ingredient-tag {
+            font-size: 0.75em;
+            background: rgba(0, 255, 136, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .summon-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .summon-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .summon-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .battle-arena {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .combatant {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .combatant.player {
+            border: 2px solid #00ff88;
+        }
+
+        .combatant.enemy {
+            border: 2px solid #ff3366;
+        }
+
+        .combatant-avatar {
+            font-size: 4em;
+            margin: 20px 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .combatant-name {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .player .combatant-name {
+            color: #00ff88;
+        }
+
+        .enemy .combatant-name {
+            color: #ff3366;
+        }
+
+        .combatant-hp {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .hp-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88 0%, #00cc6a 100%);
+            transition: width 0.5s;
+        }
+
+        .enemy .hp-fill {
+            background: linear-gradient(90deg, #ff3366 0%, #cc2952 100%);
+        }
+
+        .combatant-freshness {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #ffaa00;
+        }
+
+        .command-panel {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .command-panel h3 {
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+
+        .command-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .command-button {
+            padding: 20px 10px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #666;
+            border-radius: 8px;
+            color: #eee;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .command-button:hover:not(:disabled) {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .command-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .command-button.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .battle-log {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 8px;
+            border-left: 3px solid #00ff88;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .log-entry.damage {
+            border-left-color: #ff3366;
+        }
+
+        .log-entry.context-bonus {
+            border-left-color: #ffaa00;
+        }
+
+        .qte-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .qte-container.active {
+            display: flex;
+        }
+
+        .qte-prompt {
+            text-align: center;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 50px;
+            border: 3px solid #00ff88;
+            border-radius: 15px;
+            max-width: 500px;
+        }
+
+        .qte-prompt h2 {
+            font-size: 2em;
+            color: #00ff88;
+            margin-bottom: 20px;
+        }
+
+        .qte-key {
+            font-size: 4em;
+            color: #ffaa00;
+            margin: 30px 0;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .qte-timer {
+            font-size: 1.5em;
+            color: #ff3366;
+            margin-top: 20px;
+        }
+
+        .result-display {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .result-display h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .result-display.victory h2 {
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+        }
+
+        .result-display.defeat h2 {
+            color: #ff3366;
+            text-shadow: 0 0 20px #ff3366;
+        }
+
+        .result-display.draw h2 {
+            color: #ffaa00;
+            text-shadow: 0 0 20px #ffaa00;
+        }
+
+        .result-flavor {
+            font-size: 1.3em;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .restart-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .restart-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .turn-counter {
+            text-align: center;
+            font-size: 1.1em;
+            color: #ffaa00;
+            margin-bottom: 15px;
+        }
+
+        .match-indicator {
+            display: inline-block;
+            margin-left: 5px;
+            padding: 2px 6px;
+            background: rgba(255, 170, 0, 0.3);
+            border-radius: 3px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>★ ミーム召喚儀式バトル ★</h1>
+        
+        <div class="phase-indicator" id="phaseIndicator">儀式準備中...</div>
+
+        <!-- 儀式フェーズ -->
+        <div class="ritual-phase active" id="ritualPhase">
+            <div class="battlefield-context">
+                <h3>戦場の空気</h3>
+                <div class="context-tags" id="battlefieldTags"></div>
+            </div>
+
+            <h2 style="text-align: center; margin-bottom: 20px;">召喚するミームを選択せよ</h2>
+            
+            <div class="ingredient-selector" id="ingredientSelector"></div>
+            
+            <button class="summon-button" id="summonButton" disabled>
+                ⚡ 儀式を執行する ⚡
+            </button>
+        </div>
+
+        <!-- バトルフェーズ -->
+        <div class="battle-phase" id="battlePhase">
+            <div class="turn-counter" id="turnCounter"></div>
+
+            <div class="battle-arena">
+                <div class="combatant player">
+                    <div class="combatant-name" id="playerName">???</div>
+                    <div class="combatant-avatar" id="playerAvatar">?</div>
+                    <div class="combatant-hp">
+                        HP: <span id="playerHP">100</span> / 100
+                        <div class="hp-bar">
+                            <div class="hp-fill" id="playerHPBar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="combatant-freshness">
+                        鮮度: <span id="playerFreshness">100</span>%
+                    </div>
+                </div>
+
+                <div class="combatant enemy">
+                    <div class="combatant-name" id="enemyName">???</div>
+                    <div class="combatant-avatar" id="enemyAvatar">?</div>
+                    <div class="combatant-hp">
+                        HP: <span id="enemyHP">100</span> / 100
+                        <div class="hp-bar">
+                            <div class="hp-fill" id="enemyHPBar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="combatant-freshness">
+                        鮮度: <span id="enemyFreshness">100</span>%
+                    </div>
+                </div>
+            </div>
+
+            <div class="battle-log" id="battleLog"></div>
+
+            <div class="command-panel">
+                <h3>コマンド選択</h3>
+                <div class="command-buttons">
+                    <button class="command-button" data-command="attack">
+                        攻撃<br><small>直接ダメージ</small>
+                    </button>
+                    <button class="command-button" data-command="feint">
+                        フェイント<br><small>攻撃を無効化</small>
+                    </button>
+                    <button class="command-button" data-command="charge">
+                        チャージ<br><small>次ターン強化</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 結果フェーズ -->
+        <div class="result-phase" id="resultPhase">
+            <div class="result-display" id="resultDisplay">
+                <h2 id="resultTitle">結果</h2>
+                <div class="result-flavor" id="resultFlavor"></div>
+                <button class="restart-button" id="restartButton">再挑戦</button>
+            </div>
+        </div>
+
+        <!-- QTEオーバーレイ -->
+        <div class="qte-container" id="qteContainer">
+            <div class="qte-prompt">
+                <h2 id="qteTitle">QTE!</h2>
+                <div class="qte-key" id="qteKey">SPACE</div>
+                <div class="qte-timer" id="qteTimer">3.0</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="memes.js"></script>
+    <script src="qte.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
