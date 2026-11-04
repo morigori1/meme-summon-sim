@@ -12,7 +12,20 @@ const MEME_DATABASE = {
         basePower: 25,
         baseHP: 100,
         flavorWin: '「まずうちさぁ、勝ったんだけど...焼いてかない？」',
-        flavorLose: '「あぁ^〜こころがぴょんぴょんするんじゃぁ^〜」（違うアニメ）'
+        flavorLose: '「あぁ^〜こころがぴょんぴょんするんじゃぁ^〜」（違うアニメ）',
+        catchphrase: '「まずうちさぁ...屋上あんだけど、焼いてかない？」',
+        lore: '淫夢語録として知られる多目的語録系ミーム。あらゆる場面で応用可能な汎用性の高さが特徴。インターネット上のコミュニケーションを独特の方向に進化させた。',
+        signatureMove: '語録連打・焼き払い',
+        personality: {
+            attackLine: 'いいよ！来いよ！',
+            feintLine: '見とけよ見とけよ～',
+            chargeLine: 'まずうちさぁ...準備があるんだけど'
+        },
+        uniqueTrait: {
+            name: '語録テンプレ',
+            description: '攻撃成功時、語録の汎用性で鮮度+3回復',
+            type: 'on_attack_success'
+        }
     },
     
     nullpo: {
@@ -25,7 +38,20 @@ const MEME_DATABASE = {
         basePower: 20,
         baseHP: 90,
         flavorWin: 'ぬるぽ → ガッ！完璧なタイミングで勝利！',
-        flavorLose: 'ガッされすぎて敗北...'
+        flavorLose: 'ガッされすぎて敗北...',
+        catchphrase: 'ぬるぽ（ガッ）',
+        lore: '2chで生まれた反射的なやり取り文化。「ぬるぽ」と書けば誰かが「ガッ」と返す掟。スレッドの空気を和ませる古典的コンボとして今も受け継がれる。',
+        signatureMove: '即応ガッ',
+        personality: {
+            attackLine: 'ぬるぽ',
+            feintLine: 'ガッ！（空振り）',
+            chargeLine: 'ぬるぽ...'
+        },
+        uniqueTrait: {
+            name: '即応',
+            description: 'フェイント成功時に反撃ダメージ+8',
+            type: 'on_feint_success'
+        }
     },
 
     buront: {
@@ -38,7 +64,20 @@ const MEME_DATABASE = {
         basePower: 30,
         baseHP: 120,
         flavorWin: '「ナイトが盾を持って何が悪い」圧倒的勝利！',
-        flavorLose: '「廃人乙」と煽られて敗北'
+        flavorLose: '「廃人乙」と煽られて敗北',
+        catchphrase: '「ナイトが前衛で何が悪い」',
+        lore: 'FF11のプレイヤーから生まれた誤字と独特の理論で知られる伝説。「廃人乙」などの名言とともに、ネトゲ文化を代表するキャラクターとして語り継がれる。',
+        signatureMove: 'ナイト様強撃',
+        personality: {
+            attackLine: '廃人乙',
+            feintLine: 'それFF11な',
+            chargeLine: 'ナイトは前衛なんだぞ'
+        },
+        uniqueTrait: {
+            name: 'ナイト様',
+            description: 'チャージ完了攻撃の倍率1.5倍→2.0倍',
+            type: 'charge_boost'
+        }
     },
 
     hattoushin: {
@@ -51,7 +90,20 @@ const MEME_DATABASE = {
         basePower: 22,
         baseHP: 95,
         flavorWin: '静かに、しかし確実に勝利を掴んだ...',
-        flavorLose: '闇に消えていった...'
+        flavorLose: '闇に消えていった...',
+        catchphrase: '................',
+        lore: '本来かわいらしいモナーが縦に引き延ばされ不気味な姿に。AAアートの進化と破壊のバランスを体現する存在として2ch黎明期に恐怖と笑いをもたらした。',
+        signatureMove: '不気味な視線',
+        personality: {
+            attackLine: '............',
+            feintLine: '..........？',
+            chargeLine: '..................'
+        },
+        uniqueTrait: {
+            name: '不気味',
+            description: '攻撃時、相手の鮮度を追加-3',
+            type: 'freshness_drain'
+        }
     },
 
     tonfa: {
@@ -64,7 +116,20 @@ const MEME_DATABASE = {
         basePower: 24,
         baseHP: 100,
         flavorWin: 'トンファーキック！見事命中！',
-        flavorLose: 'トンファーが折れた...'
+        flavorLose: 'トンファーが折れた...',
+        catchphrase: 'トンファーを持って防御するのは基本だろう',
+        lore: '武術の基本を逸脱した独特の使い方ネタ。トンファーで蹴る、投げる、などの謎理論が展開され、武器の概念を破壊していく面白さ。',
+        signatureMove: 'トンファーキック',
+        personality: {
+            attackLine: 'トンファーキック！',
+            feintLine: 'トンファーガード！',
+            chargeLine: 'トンファーをかまえる...'
+        },
+        uniqueTrait: {
+            name: '武術',
+            description: '連続攻撃成功で威力累積+4/回',
+            type: 'combo_stack'
+        }
     },
 
     cco: {
@@ -77,7 +142,21 @@ const MEME_DATABASE = {
         basePower: 21,
         baseHP: 85,
         flavorWin: '「See See Oh!」の圧倒的存在感で勝利！',
-        flavorLose: '空耳が通じなかった...'
+        flavorLose: '空耳が通じなかった...',
+        catchphrase: 'See See Oh! ウマウマ!',
+        lore: 'るろうに剣心英語版の志々雄セリフが「CCO」に聞こえる空耳。音MAD素材としての汎用性と謎の中毒性で一世を風靡した。るろうに検診などの派生も。',
+        signatureMove: 'CCO連打',
+        personality: {
+            attackLine: 'See See Oh!',
+            feintLine: 'ウマウマ！',
+            chargeLine: 'るろうに...'
+        },
+        uniqueTrait: {
+            name: '空耳',
+            description: '不条理タグの戦場でダメージ+20%',
+            type: 'battlefield_bonus',
+            targetTag: 'ネタ'
+        }
     },
 
     // 海外ミーム
@@ -91,7 +170,20 @@ const MEME_DATABASE = {
         basePower: 26,
         baseHP: 95,
         flavorWin: '♪ Never gonna give you up... 完全勝利！',
-        flavorLose: '曲が流れきる前に敗北...'
+        flavorLose: '曲が流れきる前に敗北...',
+        catchphrase: '♪ Never gonna give you up...',
+        lore: 'リック・アストリーの楽曲でだますインターネット最古級のトラップミーム。クリックした先で流れる曲と共に、不意打ちの芸術として完成された。',
+        signatureMove: 'Rickroll',
+        personality: {
+            attackLine: '♪ Never gonna give you up',
+            feintLine: '♪ Never gonna let you down',
+            chargeLine: '♪ Never gonna run around...'
+        },
+        uniqueTrait: {
+            name: '不意打ち',
+            description: '初ターン攻撃のダメージ+50%',
+            type: 'first_turn_boost'
+        }
     },
 
     thisisfine: {
@@ -104,7 +196,20 @@ const MEME_DATABASE = {
         basePower: 18,
         baseHP: 110,
         flavorWin: '「大丈夫、問題ない」...本当に勝った！',
-        flavorLose: '実際問題あった。'
+        flavorLose: '実際問題あった。',
+        catchphrase: 'This is fine.',
+        lore: '炎に包まれた部屋でコーヒーを飲む犬。現実逃避と諦念の象徴として、困難な状況でのセルフコントロール（もしくは現実拒否）を表現する。',
+        signatureMove: '平然',
+        personality: {
+            attackLine: 'This is fine.',
+            feintLine: 'Everything is fine.',
+            chargeLine: 'This is...'
+        },
+        uniqueTrait: {
+            name: '平然',
+            description: 'HP50%以下で被ダメージ-25%',
+            type: 'low_hp_defense'
+        }
     },
 
     leeroy: {
@@ -117,7 +222,20 @@ const MEME_DATABASE = {
         basePower: 35,
         baseHP: 70,
         flavorWin: '「LEEEEROY JENKINS!!!」無謀な突撃が功を奏した！',
-        flavorLose: '予想通り全滅した。'
+        flavorLose: '予想通り全滅した。',
+        catchphrase: 'LEEEEROY JENKINS!!!',
+        lore: 'WoWのレイド動画で生まれた伝説。綿密な作戦中に一人突撃して全滅させたプレイヤー。計画性のなさと勇気（無謀さ）の代名詞。',
+        signatureMove: '無謀突撃',
+        personality: {
+            attackLine: 'LEEROY JENKINS!!!',
+            feintLine: 'おっと計画変更',
+            chargeLine: '少なくとも鶏肉はある...'
+        },
+        uniqueTrait: {
+            name: '突撃',
+            description: '攻撃力+10だが被ダメージ+15%',
+            type: 'high_risk'
+        }
     },
 
     doge: {
@@ -130,42 +248,49 @@ const MEME_DATABASE = {
         basePower: 23,
         baseHP: 100,
         flavorWin: 'wow. such victory. much skill.',
-        flavorLose: 'so defeat. very sad. wow.'
+        flavorLose: 'so defeat. very sad. wow.',
+        catchphrase: 'wow. such meme. very summon.',
+        lore: '柴犬カボスの写真から生まれた、破綻した英語と内心モノローグのミーム。シンプルな可愛さと汎用性で暗号通貨のマスコットにもなった。',
+        signatureMove: 'such attack',
+        personality: {
+            attackLine: 'much attack. wow.',
+            feintLine: 'such dodge. very clever.',
+            chargeLine: 'so prepare. very strategy.'
+        },
+        uniqueTrait: {
+            name: 'such wow',
+            description: 'ターン終了時15%でHP+5 or 鮮度+5',
+            type: 'random_bonus'
+        }
     }
 };
 
-// 戦場文脈の定義
-const BATTLEFIELD_CONTEXTS = [
-    {
-        id: 'classic',
-        name: '懐古の空気',
-        tags: ['古典', 'AA', '語録'],
-        description: '2000年代のインターネット文化が漂う'
-    },
-    {
-        id: 'heated',
-        name: '炎上気味',
-        tags: ['圧倒', '突撃', '即応'],
-        description: '激しい感情が渦巻いている'
-    },
-    {
-        id: 'absurd',
-        name: '不条理劇場',
-        tags: ['ネタ', '空耳', '不気味'],
-        description: '理屈を超えた展開が待っている'
-    },
-    {
-        id: 'global',
-        name: 'グローバル会場',
-        tags: ['海外', '音楽', 'ゲーム'],
-        description: '国境を越えたミームが集う'
-    },
-    {
-        id: 'philosophical',
-        name: '深淵を覗く',
-        tags: ['哲学', '現実逃避', '不気味'],
-        description: '何かを考えさせられる雰囲気'
-    }
+// タグプール
+const ALL_TAGS = ['古典', 'AA', '語録', '圧倒', '突撃', '即応', 'ネタ', '空耳', '不気味', 
+                  '海外', '音楽', 'ゲーム', '哲学', '現実逃避', '連携', '武術', '音MAD', '動物', '万能'];
+
+// 戦場名生成用の語彙
+const BATTLEFIELD_ADJECTIVES = [
+    '荒廃した', '光り輝く', '混沌の', '静寂の', '熱狂の', '禁断の',
+    '失われた', '呪われた', '祝福された', '歪んだ', '幻想的な', '電脳の',
+    '古代の', '未来の', '崩壊した', '再生の', '煌めく', '暗黒の'
+];
+
+const BATTLEFIELD_NOUNS = [
+    '闘技場', '広場', '次元', '回廊', '空間', '会場',
+    '戦場', 'ドメイン', 'ゾーン', 'エリア', 'フィールド', 'ステージ',
+    '神殿', '遺跡', '要塞', 'サーバー', 'スレッド', 'タイムライン'
+];
+
+const BATTLEFIELD_DESCRIPTIONS = [
+    'があなたを待ち受ける',
+    'に響くミームの残響',
+    'で繰り広げられる儀式',
+    'に集う者たちの記憶',
+    'を支配する不思議な力',
+    'から立ち上る熱気',
+    'に刻まれた歴史の痕跡',
+    'を漂う懐かしい空気'
 ];
 
 // 文脈マッチ判定
@@ -204,7 +329,25 @@ function selectRandomEnemy(playerMeme) {
     return availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
 }
 
-// ランダムな戦場文脈を選択
-function selectRandomBattlefield() {
-    return BATTLEFIELD_CONTEXTS[Math.floor(Math.random() * BATTLEFIELD_CONTEXTS.length)];
+// ランダムな戦場を生成
+function generateRandomBattlefield() {
+    // ランダムな名前生成
+    const adjective = BATTLEFIELD_ADJECTIVES[Math.floor(Math.random() * BATTLEFIELD_ADJECTIVES.length)];
+    const noun = BATTLEFIELD_NOUNS[Math.floor(Math.random() * BATTLEFIELD_NOUNS.length)];
+    const desc = BATTLEFIELD_DESCRIPTIONS[Math.floor(Math.random() * BATTLEFIELD_DESCRIPTIONS.length)];
+    
+    const name = `${adjective}${noun}`;
+    const description = `${name}${desc}`;
+    
+    // ランダムに2〜4個のタグを選択
+    const tagCount = 2 + Math.floor(Math.random() * 3); // 2, 3, or 4
+    const shuffled = [...ALL_TAGS].sort(() => Math.random() - 0.5);
+    const tags = shuffled.slice(0, tagCount);
+    
+    return {
+        id: 'generated_' + Date.now(),
+        name: name,
+        description: description,
+        tags: tags
+    };
 }

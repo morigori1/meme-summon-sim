@@ -18,11 +18,15 @@ class MemeRitualBattle {
 
     init() {
         this.qteManager.init();
-        this.battlefield = selectRandomBattlefield();
+        this.battlefield = generateRandomBattlefield();
         this.renderBattlefield();
         this.renderMemeSelector();
         this.attachEventListeners();
         this.updatePhaseIndicator();
+        
+        // 連続攻撃カウンター初期化
+        this.playerComboCount = 0;
+        this.enemyComboCount = 0;
     }
 
     updatePhaseIndicator() {
@@ -70,9 +74,19 @@ class MemeRitualBattle {
             const matchIndicator = matchCount > 0 ? 
                 `<span class="match-indicator">適合度:${matchCount}</span>` : '';
             
+            // loreの1行要約（最初の1文）
+            const loreSummary = meme.lore.split('。')[0] + '。';
+            
             card.innerHTML = `
                 <h4>${meme.displayName} ${meme.avatar}</h4>
                 <p style="font-size: 0.85em; margin: 5px 0;">${meme.description}</p>
+                <p style="font-size: 0.75em; margin: 5px 0; color: #aaa; font-style: italic;">${loreSummary}</p>
+                <div style="margin: 5px 0; font-size: 0.85em;">
+                    <strong style="color: #ffaa00;">必殺技:</strong> ${meme.signatureMove}
+                </div>
+                <div style="margin: 5px 0; font-size: 0.85em;">
+                    <strong style="color: #00ff88;">特性:</strong> ${meme.uniqueTrait.name}
+                </div>
                 <div class="ingredient-tags">
                     ${meme.tags.map(tag => `<span class="ingredient-tag">#${tag}</span>`).join('')}
                 </div>
@@ -135,6 +149,9 @@ class MemeRitualBattle {
             freshness: 100
         };
         
+        // 儀式演出を実行
+        await this.performRitualSequence();
+        
         // フェーズ切り替え
         this.phase = 'battle';
         this.turn = 0;
@@ -146,30 +163,95 @@ class MemeRitualBattle {
         this.renderCombatants();
         this.log(`${this.playerMeme.displayName} VS ${this.enemyMeme.displayName}`);
         this.log(`戦場：${this.battlefield.name}`);
-        
-        // 最初のターンで儀式QTE
-        await this.ritualQTE();
     }
 
-    async ritualQTE() {
-        this.log('━━━ 召喚儀式発動！ ━━━', 'system');
+    async performRitualSequence() {
+        const overlay = document.getElementById('ritualOverlay');
+        const avatar = document.getElementById('ritualAvatar');
+        const catchphrase = document.getElementById('ritualCatchphrase');
+        const lore = document.getElementById('ritualLore');
+        const step = document.getElementById('ritualStep');
+        const gaugeFill = document.getElementById('ritualGaugeFill');
+        const particles = document.getElementById('ritualParticles');
         
-        // コマンドボタンを一時的に無効化
-        this.setCommandButtonsEnabled(false);
+        // パーティクル生成
+        this.createParticles(particles);
+        
+        // オーバーレイ表示
+        overlay.classList.add('active');
+        avatar.textContent = this.playerMeme.avatar;
+        catchphrase.textContent = this.playerMeme.catchphrase;
+        lore.textContent = this.playerMeme.lore;
+        
+        // ステップ1: 準備
+        step.textContent = '【第一段階】召喚陣準備...';
+        gaugeFill.style.width = '0%';
+        await this.wait(1000);
+        gaugeFill.style.width = '33%';
+        await this.wait(1000);
+        
+        // ステップ2: 詠唱
+        step.textContent = '【第二段階】詠唱開始...';
+        gaugeFill.style.width = '66%';
+        await this.wait(1500);
+        
+        // ステップ3: QTE
+        step.textContent = '【第三段階】力の集中！';
+        gaugeFill.style.width = '100%';
+        await this.wait(500);
         
         const success = await this.qteManager.start();
         
+        // ステップ4: 召喚完了
         if (success) {
-            this.log('🎉 儀式成功！プレイヤーに先制ボーナス！', 'context-bonus');
+            step.textContent = '✨ 召喚成功！ ✨';
+            this.flashEffect();
+            await this.wait(800);
+            
             this.playerMeme.hp += 20;
             this.playerMeme.maxHP += 20;
+            
+            setTimeout(() => {
+                this.log('🎉 儀式成功！プレイヤーに先制ボーナス！', 'context-bonus');
+            }, 100);
         } else {
-            this.log('💥 儀式失敗...初手が不安定に', 'damage');
+            step.textContent = '💥 召喚不完全... 💥';
+            await this.wait(1000);
+            
             this.playerMeme.freshness -= 10;
+            
+            setTimeout(() => {
+                this.log('💥 儀式失敗...初手が不安定に', 'damage');
+            }, 100);
         }
         
-        this.renderCombatants();
-        this.setCommandButtonsEnabled(true);
+        overlay.classList.remove('active');
+        
+        // パーティクルクリア
+        particles.innerHTML = '';
+    }
+    
+    createParticles(container) {
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            container.appendChild(particle);
+        }
+    }
+    
+    flashEffect() {
+        const flash = document.getElementById('flashOverlay');
+        flash.classList.add('active');
+        setTimeout(() => {
+            flash.classList.remove('active');
+        }, 500);
+    }
+    
+    wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     renderCombatants() {
@@ -250,8 +332,11 @@ class MemeRitualBattle {
         // 同時解決システム（じゃんけん風）
         
         // チャージ判定
-        const playerMultiplier = this.playerCharged ? 1.5 : 1.0;
-        const enemyMultiplier = this.enemyCharged ? 1.5 : 1.0;
+        let playerMultiplier = this.playerCharged ? 1.5 : 1.0;
+        let enemyMultiplier = this.enemyCharged ? 1.5 : 1.0;
+        
+        const playerWasCharged = this.playerCharged;
+        const enemyWasCharged = this.enemyCharged;
         
         this.playerCharged = false;
         this.enemyCharged = false;
@@ -263,9 +348,10 @@ class MemeRitualBattle {
         
         if (playerCmd === 'attack' && enemyCmd === 'feint') {
             this.log('敵のフェイントで攻撃が空振り！');
+            this.playerComboCount = 0;
         } else if (playerCmd === 'attack') {
             // プレイヤーの攻撃
-            const result = calculateDamage(
+            let result = calculateDamage(
                 this.playerMeme, 
                 this.enemyMeme, 
                 this.battlefield.tags,
@@ -283,36 +369,62 @@ class MemeRitualBattle {
                 this.log(qteResult.message, qteSuccess ? 'context-bonus' : 'damage');
             }
             
+            // ユニーク特性適用
+            finalDamage = this.applyUniqueTrait(this.playerMeme, 'player', 'attack', finalDamage, playerWasCharged);
+            
             this.enemyMeme.hp -= finalDamage;
             this.playerMeme.freshness -= 5;
             
-            this.log(`${this.playerMeme.displayName}の攻撃！${finalDamage}ダメージ！`, 'damage');
+            this.log(`${this.playerMeme.personality.attackLine}`, 'normal');
+            this.log(`${this.playerMeme.displayName}の${this.playerMeme.signatureMove}！${finalDamage}ダメージ！`, 'damage');
             if (result.matchCount > 0) {
                 this.log(`文脈適合ボーナス！(+${Math.floor(result.contextBonus * 100)}%)`, 'context-bonus');
             }
+            
+            this.playerComboCount++;
         } else if (playerCmd === 'charge') {
             this.playerCharged = true;
+            this.log(`${this.playerMeme.personality.chargeLine}`, 'normal');
             this.log(`${this.playerMeme.displayName}は力を溜めている...`);
+        } else if (playerCmd === 'feint') {
+            this.log(`${this.playerMeme.personality.feintLine}`, 'normal');
         }
         
         if (enemyCmd === 'attack' && playerCmd === 'feint') {
             this.log('プレイヤーのフェイントで敵の攻撃を回避！', 'context-bonus');
+            // ぬるぽ即応特性
+            const feintDamage = this.applyUniqueTrait(this.playerMeme, 'player', 'feint_success', 0);
+            if (feintDamage > 0) {
+                this.enemyMeme.hp -= feintDamage;
+                this.log(`反撃！${feintDamage}ダメージ！`, 'context-bonus');
+            }
+            this.enemyComboCount = 0;
         } else if (enemyCmd === 'attack') {
             // 敵の攻撃
-            const result = calculateDamage(
+            let result = calculateDamage(
                 this.enemyMeme, 
                 this.playerMeme, 
                 this.battlefield.tags,
                 enemyMultiplier
             );
             
-            this.playerMeme.hp -= result.damage;
+            let finalDamage = result.damage;
+            
+            // 敵のユニーク特性適用
+            finalDamage = this.applyUniqueTrait(this.enemyMeme, 'enemy', 'attack', finalDamage, enemyWasCharged);
+            
+            // プレイヤーの防御特性適用
+            finalDamage = this.applyDefenseTrait(this.playerMeme, finalDamage);
+            
+            this.playerMeme.hp -= finalDamage;
             this.enemyMeme.freshness -= 5;
             
-            this.log(`${this.enemyMeme.displayName}の攻撃！${result.damage}ダメージ！`, 'damage');
+            this.log(`${this.enemyMeme.displayName}の攻撃！${finalDamage}ダメージ！`, 'damage');
             if (result.matchCount > 0) {
                 this.log(`敵も文脈適合ボーナス！(+${Math.floor(result.contextBonus * 100)}%)`, 'damage');
             }
+            
+            this.enemyComboCount++;
         } else if (enemyCmd === 'charge') {
             this.enemyCharged = true;
             this.log(`${this.enemyMeme.displayName}は力を溜めている...`);
@@ -383,10 +495,14 @@ class MemeRitualBattle {
             case 'victory':
                 resultTitle.textContent = '🎉 勝利！ 🎉';
                 resultFlavor.innerHTML = `
+                    <p style="font-size: 1.1em; color: #00ff88;">${this.playerMeme.catchphrase}</p>
                     <p>${this.playerMeme.flavorWin}</p>
                     <p style="margin-top: 15px;">
                         ${this.playerMeme.displayName}が${this.enemyMeme.displayName}を制した！<br>
                         残りHP: ${Math.max(0, this.playerMeme.hp)} / 鮮度: ${Math.max(0, this.playerMeme.freshness)}%
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #aaa; font-style: italic;">
+                        ${this.playerMeme.lore.split('。')[0]}。
                     </p>
                 `;
                 break;
@@ -397,6 +513,9 @@ class MemeRitualBattle {
                     <p style="margin-top: 15px;">
                         ${this.enemyMeme.displayName}の前に力尽きた...<br>
                         次こそは勝利を掴め！
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #aaa; font-style: italic;">
+                        ${this.enemyMeme.catchphrase}
                     </p>
                 `;
                 break;
@@ -436,6 +555,122 @@ class MemeRitualBattle {
         document.querySelectorAll('.command-button').forEach(btn => {
             btn.disabled = !enabled;
         });
+    }
+    
+    applyUniqueTrait(meme, side, action, baseDamage, isCharged = false) {
+        const trait = meme.uniqueTrait;
+        let damage = baseDamage;
+        
+        switch(trait.type) {
+            case 'on_attack_success':
+                // 野獣先輩: 攻撃成功時、鮮度+3回復
+                if (action === 'attack' && meme.id === 'yaju') {
+                    meme.freshness = Math.min(100, meme.freshness + 3);
+                    this.log(`${meme.displayName}の語録で鮮度回復！`, 'context-bonus');
+                }
+                break;
+                
+            case 'on_feint_success':
+                // ぬるぽ: フェイント成功時に反撃ダメージ+8
+                if (action === 'feint_success' && meme.id === 'nullpo') {
+                    return 8;
+                }
+                break;
+                
+            case 'charge_boost':
+                // ブロントさん: チャージ完了攻撃の倍率2.0倍
+                if (action === 'attack' && isCharged && meme.id === 'buront') {
+                    const boost = Math.floor(damage * 0.33); // 1.5→2.0へ補正
+                    this.log(`ナイト様の威厳！チャージ攻撃強化！`, 'context-bonus');
+                    return damage + boost;
+                }
+                break;
+                
+            case 'freshness_drain':
+                // 八頭身モナー: 攻撃時、相手の鮮度を追加-3
+                if (action === 'attack' && meme.id === 'hattoushin') {
+                    const target = side === 'player' ? this.enemyMeme : this.playerMeme;
+                    target.freshness = Math.max(0, target.freshness - 3);
+                    this.log(`不気味な視線が相手を蝕む...`, 'context-bonus');
+                }
+                break;
+                
+            case 'combo_stack':
+                // トンファー: 連続攻撃成功で威力累積+4/回
+                if (action === 'attack' && meme.id === 'tonfa') {
+                    const comboCount = side === 'player' ? this.playerComboCount : this.enemyComboCount;
+                    if (comboCount > 0) {
+                        const comboBonus = comboCount * 4;
+                        this.log(`トンファーコンボ！+${comboBonus}`, 'context-bonus');
+                        return damage + comboBonus;
+                    }
+                }
+                break;
+                
+            case 'battlefield_bonus':
+                // CCO: 特定タグの戦場でダメージ+20%
+                if (action === 'attack' && meme.id === 'cco') {
+                    if (this.battlefield.tags.includes(trait.targetTag)) {
+                        const bonus = Math.floor(damage * 0.2);
+                        this.log(`空耳が戦場に響く！`, 'context-bonus');
+                        return damage + bonus;
+                    }
+                }
+                break;
+                
+            case 'first_turn_boost':
+                // Rickroll: 初ターン攻撃のダメージ+50%
+                if (action === 'attack' && meme.id === 'rickroll' && this.turn === 0) {
+                    const bonus = Math.floor(damage * 0.5);
+                    this.log(`不意打ち成功！`, 'context-bonus');
+                    return damage + bonus;
+                }
+                break;
+                
+            case 'high_risk':
+                // Leeroy: 攻撃力+10だが被ダメージ+15%（攻撃時のみ+10）
+                if (action === 'attack' && meme.id === 'leeroy') {
+                    return damage + 10;
+                }
+                break;
+                
+            case 'random_bonus':
+                // Doge: ターン終了時15%でHP+5 or 鮮度+5（攻撃時にチェック）
+                if (action === 'attack' && meme.id === 'doge' && Math.random() < 0.15) {
+                    if (Math.random() < 0.5) {
+                        meme.hp = Math.min(meme.maxHP, meme.hp + 5);
+                        this.log(`such heal. wow.`, 'context-bonus');
+                    } else {
+                        meme.freshness = Math.min(100, meme.freshness + 5);
+                        this.log(`very fresh. much energy.`, 'context-bonus');
+                    }
+                }
+                break;
+        }
+        
+        return damage;
+    }
+    
+    applyDefenseTrait(meme, incomingDamage) {
+        const trait = meme.uniqueTrait;
+        
+        if (trait.type === 'low_hp_defense') {
+            // This is fine: HP50%以下で被ダメージ-25%
+            if (meme.id === 'thisisfine' && meme.hp <= meme.maxHP * 0.5) {
+                const reduction = Math.floor(incomingDamage * 0.25);
+                this.log(`This is fine... 被ダメージ軽減！`, 'context-bonus');
+                return incomingDamage - reduction;
+            }
+        }
+        
+        if (trait.type === 'high_risk') {
+            // Leeroy: 被ダメージ+15%
+            if (meme.id === 'leeroy') {
+                return Math.floor(incomingDamage * 1.15);
+            }
+        }
+        
+        return incomingDamage;
     }
 }
 
