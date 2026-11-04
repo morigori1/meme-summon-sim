@@ -1154,7 +1154,15 @@ const NET_EVENTS = [
     { id: 'age', name: 'age荒らし', effect: 'expose', value: 0, prob: 0.08, message: '📣 age荒らし！鮮度-10', chain: null },
     { id: 'copy_paste', name: 'コピペ爆撃', effect: 'spam', value: 0, prob: 0.10, message: '📋 コピペ爆撃！混乱！', chain: null },
     { id: 'bot_spam', name: 'bot荒らし', effect: 'bot', value: 0, prob: 0.08, message: '🤖 bot大量発生！HP-8', chain: null },
-    { id: 'flame_war', name: '炎上', effect: 'flame', value: 0, prob: 0.10, message: '🔥 炎上！全員ダメージ-12', chain: 'troll' }
+    { id: 'flame_war', name: '炎上', effect: 'flame', value: 0, prob: 0.10, message: '🔥 炎上！全員ダメージ-12', chain: 'troll' },
+    { id: 'sticky_troll', name: '粘着荒らし', effect: 'sticky', value: 3, prob: 0.12, message: '👻 粘着荒らし出現！3ターン持続ダメージ', chain: null },
+    { id: 'multi_post', name: '連投', effect: 'multi', value: 0, prob: 0.10, message: '📢 連投攻撃！連続3回ダメージ！', chain: null },
+    { id: 'quote_loop', name: '引用ループ', effect: 'quote', value: 0, prob: 0.08, message: '🔁 引用ループ発生！混乱+ダメージ', chain: null },
+    { id: 'neta_pile', name: 'ネタ被り', effect: 'pile_on', value: 0, prob: 0.09, message: '🎭 ネタ被り！鮮度激減-20', chain: null },
+    { id: 'long_post', name: '長文爆撃', effect: 'long', value: 0, prob: 0.11, message: '📜 長文爆撃！スクロールでHP-10', chain: null },
+    { id: 'image_spam', name: '画像連投', effect: 'img_spam', value: 0, prob: 0.10, message: '🖼️ 画像連投！容量オーバー！', chain: 'server_down' },
+    { id: 'ip_trace', name: 'IP特定', effect: 'trace', value: 0, prob: 0.07, message: '🔍 IP特定された！次ターン弱体化', chain: null },
+    { id: 'proxy_fail', name: 'プロクシ失敗', effect: 'proxy', value: 0, prob: 0.08, message: '🚫 プロクシ失敗！素のIPで鮮度-15', chain: null }
 ];
 
 // 配信風アイテム
@@ -1204,17 +1212,58 @@ function calculateDamage(attacker, defender, battlefieldTags, chargeMultiplier =
     const matchCount = calculateContextMatch(attacker.tags, battlefieldTags);
     const contextBonus = matchCount * 0.3; // 1マッチにつき+30%
     
-    // ランダム要素
-    const randomFactor = 0.8 + Math.random() * 0.4; // 0.8 ~ 1.2
+    // ランダム要素（拡大）
+    const randomFactor = 0.6 + Math.random() * 0.8; // 0.6 ~ 1.4（より振れ幅大）
+    
+    // クリティカル判定（10%）
+    let criticalMultiplier = 1.0;
+    let isCritical = false;
+    if (Math.random() < 0.1) {
+        criticalMultiplier = 2.0 + Math.random() * 0.5; // 2.0 ~ 2.5倍
+        isCritical = true;
+    }
+    
+    // カス当たり判定（8%）
+    let isGraze = false;
+    if (Math.random() < 0.08 && !isCritical) {
+        criticalMultiplier = 0.3 + Math.random() * 0.2; // 0.3 ~ 0.5倍
+        isGraze = true;
+    }
+    
+    // 変な補正（ゾロ目ボーナス）
+    let weirdBonus = 1.0;
+    let weirdMessage = '';
+    const roll = Math.floor(Math.random() * 100);
+    if (roll === 11 || roll === 22 || roll === 33 || roll === 44 || roll === 55 || 
+        roll === 66 || roll === 77 || roll === 88 || roll === 99) {
+        weirdBonus = 1.5;
+        weirdMessage = `ゾロ目(${roll})! +50%`;
+    } else if (roll === 0) {
+        weirdBonus = 3.0;
+        weirdMessage = '00キタ━━━━(゚∀゚)━━━━!! 3倍!!';
+    }
+    
+    // 鮮度による変な補正
+    if (attacker.freshness === 100) {
+        weirdBonus *= 1.1;
+        weirdMessage += ' 完全鮮度+10%';
+    } else if (attacker.freshness <= 10) {
+        weirdBonus *= 0.7;
+        weirdMessage += ' 腐敗-30%';
+    }
     
     const totalDamage = Math.floor(
-        baseAttack * freshnessMultiplier * (1 + contextBonus) * randomFactor * chargeMultiplier
+        baseAttack * freshnessMultiplier * (1 + contextBonus) * randomFactor * chargeMultiplier * criticalMultiplier * weirdBonus
     );
     
     return {
         damage: totalDamage,
         matchCount: matchCount,
-        contextBonus: contextBonus
+        contextBonus: contextBonus,
+        isCritical: isCritical,
+        isGraze: isGraze,
+        weirdMessage: weirdMessage,
+        roll: roll
     };
 }
 
