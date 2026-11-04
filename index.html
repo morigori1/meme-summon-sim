@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ミーム召喚儀式バトル</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +15,7 @@
         }
 
         body {
-            font-family: 'MS Gothic', 'Courier New', monospace;
+            font-family: 'Noto Sans JP', 'MS Gothic', 'Courier New', monospace;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #eee;
             min-height: 100vh;
@@ -350,6 +353,198 @@
             50% { transform: scale(1.2); }
         }
 
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInScale {
+            from { 
+                opacity: 0; 
+                transform: scale(0.5);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8); }
+        }
+        
+        /* 儀式オーバーレイ */
+        .ritual-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-direction: column;
+        }
+
+        .ritual-overlay.active {
+            display: flex;
+        }
+
+        .ritual-circle {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+        }
+
+        .circle-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid rgba(0, 255, 136, 0.6);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .circle-layer:nth-child(1) {
+            width: 350px;
+            height: 350px;
+            border-style: dashed;
+        }
+
+        .circle-layer:nth-child(2) {
+            width: 280px;
+            height: 280px;
+            animation-duration: 15s;
+            animation-direction: reverse;
+        }
+
+        .circle-layer:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            border-style: dotted;
+            animation-duration: 10s;
+        }
+
+        .ritual-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6em;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .ritual-text {
+            text-align: center;
+            margin: 20px;
+            max-width: 600px;
+        }
+
+        .ritual-catchphrase {
+            font-size: 1.8em;
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-weight: bold;
+            animation: fadeInScale 0.8s ease-out;
+        }
+
+        .ritual-lore {
+            font-size: 1.1em;
+            color: #aaa;
+            line-height: 1.6;
+            font-style: italic;
+            animation: fadeInScale 1s ease-out 0.3s both;
+        }
+
+        .ritual-progress {
+            width: 80%;
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .ritual-step {
+            font-size: 1.3em;
+            color: #ffaa00;
+            margin-bottom: 15px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .ritual-gauge {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ritual-gauge-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88 0%, #00cc6a 100%);
+            width: 0%;
+            transition: width 0.5s;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff88;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s infinite;
+        }
+
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 3000;
+        }
+
+        .flash-overlay.active {
+            animation: flash 0.5s ease-out;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0; }
+        }
+
         .qte-timer {
             font-size: 1.5em;
             color: #ff3366;
@@ -514,6 +709,30 @@
                 <div class="qte-timer" id="qteTimer">3.0</div>
             </div>
         </div>
+
+        <!-- 儀式オーバーレイ -->
+        <div class="ritual-overlay" id="ritualOverlay">
+            <div class="ritual-circle">
+                <div class="circle-layer"></div>
+                <div class="circle-layer"></div>
+                <div class="circle-layer"></div>
+                <div class="ritual-center" id="ritualAvatar">?</div>
+                <div class="particles" id="ritualParticles"></div>
+            </div>
+            <div class="ritual-text">
+                <div class="ritual-catchphrase" id="ritualCatchphrase">召喚中...</div>
+                <div class="ritual-lore" id="ritualLore"></div>
+            </div>
+            <div class="ritual-progress">
+                <div class="ritual-step" id="ritualStep">準備中...</div>
+                <div class="ritual-gauge">
+                    <div class="ritual-gauge-fill" id="ritualGaugeFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- フラッシュエフェクト -->
+        <div class="flash-overlay" id="flashOverlay"></div>
     </div>
 
     <script src="memes.js"></script>
