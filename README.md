@@ -96,6 +96,39 @@ npx http-server -p 8765
 
 ## 最新の更新内容
 
+### v0.4.0 - Web画像・テクスチャ統合
+
+**フリー画像の活用**
+- 各MEMEのカード背景にテーマ画像を適用
+- 戦場ランダム生成時に背景画像も生成
+- 儀式オーバーレイに選択MEMEのテーマ画像を表示
+- すべての画像に読み込みエラー時のフォールバック実装
+
+**画像ソース**
+- [Picsum Photos](https://picsum.photos/) - ランダム画像（フリーライセンス）
+  - 各MEMEのテーマに応じたシード値
+  - blur/grayscaleパラメータで抽象化
+  - カード背景: 800x600, blur=2
+  - 戦場背景: 1200x800, blur=3
+  - 儀式背景: 選択MEMEのテーマ画像
+
+**テーマカラー追加**
+- 各MEMEに固有のテーマカラー設定
+- 画像読み込み失敗時のグラデーションフォールバックに使用
+
+**実装詳細**
+- カード背景: `linear-gradient` + Picsum画像
+- 戦場背景: 16種類のシードからランダム選択
+- 儀式背景: 選択MEMEのテーマ画像
+- すべて`onerror`ハンドラでCSSグラデーションにフォールバック
+- GitHub Pages静的サイト、CDN直リンク
+
+**画像クレジット**
+- All images provided by [Picsum Photos](https://picsum.photos/) under free license
+- Images are abstract/blurred for thematic purposes only
+- No copyrighted meme character images used
+- All image sources: Unsplash contributor photos via Picsum API
+
 ### v0.3.0 - リッチビジュアル＆演出強化
 
 **儀式演出の大幅強化**
