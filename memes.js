@@ -16,6 +16,11 @@ const MEME_DATABASE = {
         catchphrase: '「まずうちさぁ...屋上あんだけど、焼いてかない？」',
         lore: '淫夢語録として知られる多目的語録系ミーム。あらゆる場面で応用可能な汎用性の高さが特徴。インターネット上のコミュニケーションを独特の方向に進化させた。',
         signatureMove: '語録連打・焼き払い',
+        commands: {
+            attack: { name: '語録連打', desc: 'いいよ来いよ！', bonus: 1.05 },
+            feint: { name: '焼いてかない？', desc: '様子見で回避', bonus: 1.03 },
+            charge: { name: 'まずうちさぁ...', desc: '力を溜める', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'いいよ！来いよ！',
             feintLine: '見とけよ見とけよ～',
@@ -44,6 +49,11 @@ const MEME_DATABASE = {
         catchphrase: 'ぬるぽ（ガッ）',
         lore: '2chで生まれた反射的なやり取り文化。「ぬるぽ」と書けば誰かが「ガッ」と返す掟。スレッドの空気を和ませる古典的コンボとして今も受け継がれる。',
         signatureMove: '即応ガッ',
+        commands: {
+            attack: { name: 'ぬるぽ', desc: '誘発して攻撃', bonus: 1.03 },
+            feint: { name: 'ガッ待ち', desc: '即座に反応', bonus: 1.08 },
+            charge: { name: '再コンパイル', desc: 'エラー修正中', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'ぬるぽ',
             feintLine: 'ガッ！（空振り）',
@@ -72,6 +82,11 @@ const MEME_DATABASE = {
         catchphrase: '「ナイトが前衛で何が悪い」',
         lore: 'FF11のプレイヤーから生まれた誤字と独特の理論で知られる伝説。「廃人乙」などの名言とともに、ネトゲ文化を代表するキャラクターとして語り継がれる。',
         signatureMove: 'ナイト様強撃',
+        commands: {
+            attack: { name: '廃人乙', desc: 'ナイト様の一撃', bonus: 1.04 },
+            feint: { name: 'それFF11な', desc: 'FF11理論で回避', bonus: 1.02 },
+            charge: { name: '前衛構え', desc: 'ナイトは前衛', bonus: 1.1 }
+        },
         personality: {
             attackLine: '廃人乙',
             feintLine: 'それFF11な',
@@ -100,6 +115,11 @@ const MEME_DATABASE = {
         catchphrase: '................',
         lore: '本来かわいらしいモナーが縦に引き延ばされ不気味な姿に。AAアートの進化と破壊のバランスを体現する存在として2ch黎明期に恐怖と笑いをもたらした。',
         signatureMove: '不気味な視線',
+        commands: {
+            attack: { name: '不気味視線', desc: '..........', bonus: 1.03 },
+            feint: { name: '闇に潜む', desc: '見えない...', bonus: 1.04 },
+            charge: { name: '伸長準備', desc: '..................', bonus: 1.0 }
+        },
         personality: {
             attackLine: '............',
             feintLine: '..........？',
@@ -128,6 +148,11 @@ const MEME_DATABASE = {
         catchphrase: 'トンファーを持って防御するのは基本だろう',
         lore: '武術の基本を逸脱した独特の使い方ネタ。トンファーで蹴る、投げる、などの謎理論が展開され、武器の概念を破壊していく面白さ。',
         signatureMove: 'トンファーキック',
+        commands: {
+            attack: { name: 'トンファーキック', desc: '謎理論の蹴り', bonus: 1.06 },
+            feint: { name: 'トンファーガード', desc: '防御の基本', bonus: 1.03 },
+            charge: { name: 'トンファー構え', desc: '武術の極意', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'トンファーキック！',
             feintLine: 'トンファーガード！',
@@ -156,6 +181,11 @@ const MEME_DATABASE = {
         catchphrase: 'See See Oh! ウマウマ!',
         lore: 'るろうに剣心英語版の志々雄セリフが「CCO」に聞こえる空耳。音MAD素材としての汎用性と謎の中毒性で一世を風靡した。るろうに検診などの派生も。',
         signatureMove: 'CCO連打',
+        commands: {
+            attack: { name: 'See See Oh!', desc: 'CCO連打', bonus: 1.04 },
+            feint: { name: 'ウマウマ', desc: '空耳回避', bonus: 1.02 },
+            charge: { name: 'るろうに...', desc: '検診準備', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'See See Oh!',
             feintLine: 'ウマウマ！',
@@ -186,6 +216,11 @@ const MEME_DATABASE = {
         catchphrase: '♪ Never gonna give you up...',
         lore: 'リック・アストリーの楽曲でだますインターネット最古級のトラップミーム。クリックした先で流れる曲と共に、不意打ちの芸術として完成された。',
         signatureMove: 'Rickroll',
+        commands: {
+            attack: { name: 'Never Gonna', desc: 'give you up!', bonus: 1.05 },
+            feint: { name: '罠リンク', desc: 'let you down', bonus: 1.03 },
+            charge: { name: '長尺溜め', desc: 'run around...', bonus: 1.0 }
+        },
         personality: {
             attackLine: '♪ Never gonna give you up',
             feintLine: '♪ Never gonna let you down',
@@ -214,6 +249,11 @@ const MEME_DATABASE = {
         catchphrase: 'This is fine.',
         lore: '炎に包まれた部屋でコーヒーを飲む犬。現実逃避と諦念の象徴として、困難な状況でのセルフコントロール（もしくは現実拒否）を表現する。',
         signatureMove: '平然',
+        commands: {
+            attack: { name: 'This is fine', desc: '平然攻撃', bonus: 1.02 },
+            feint: { name: 'Everything fine', desc: '問題ない回避', bonus: 1.05 },
+            charge: { name: 'This is...', desc: '炎上中...', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'This is fine.',
             feintLine: 'Everything is fine.',
@@ -242,6 +282,11 @@ const MEME_DATABASE = {
         catchphrase: 'LEEEEROY JENKINS!!!',
         lore: 'WoWのレイド動画で生まれた伝説。綿密な作戦中に一人突撃して全滅させたプレイヤー。計画性のなさと勇気（無謀さ）の代名詞。',
         signatureMove: '無謀突撃',
+        commands: {
+            attack: { name: 'LEEROY突撃', desc: 'JENKINS!!!', bonus: 1.15 },
+            feint: { name: '計画無視', desc: '作戦変更', bonus: 0.95 },
+            charge: { name: 'リーロイ叫び', desc: '少なくとも鶏肉', bonus: 0.9 }
+        },
         personality: {
             attackLine: 'LEEROY JENKINS!!!',
             feintLine: 'おっと計画変更',
@@ -270,6 +315,11 @@ const MEME_DATABASE = {
         catchphrase: 'wow. such meme. very summon.',
         lore: '柴犬カボスの写真から生まれた、破綻した英語と内心モノローグのミーム。シンプルな可愛さと汎用性で暗号通貨のマスコットにもなった。',
         signatureMove: 'such attack',
+        commands: {
+            attack: { name: 'such attack', desc: 'much damage', bonus: 1.03 },
+            feint: { name: 'very dodge', desc: 'so clever', bonus: 1.04 },
+            charge: { name: 'wow prepare', desc: 'such strategy', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'much attack. wow.',
             feintLine: 'such dodge. very clever.',
@@ -298,6 +348,11 @@ const MEME_DATABASE = {
         catchphrase: 'やるお！',
         lore: '2chのAA文化を代表するキャラクター。シンプルな顔文字から無限の物語が生まれ、スレ文化を牽引した。',
         signatureMove: 'やる夫パンチ',
+        commands: {
+            attack: { name: 'やる夫パンチ', desc: 'いくお！', bonus: 1.03 },
+            feint: { name: 'やる夫回避', desc: 'かわしたお', bonus: 1.02 },
+            charge: { name: 'やる夫溜め', desc: 'ためるお', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'いくお！',
             feintLine: 'かわしたお！',
@@ -327,6 +382,11 @@ const MEME_DATABASE = {
         catchphrase: 'ギコギコ（ﾟДﾟ）',
         lore: '2ch創成期を支えたAAキャラクター。モナーと並ぶマスコット的存在として、掲示板文化の象徴となった。',
         signatureMove: 'ギコキック',
+        commands: {
+            attack: { name: 'ギコ猫パンチ', desc: 'ぬこぱんち', bonus: 1.02 },
+            feint: { name: 'ネコ身のこなし', desc: 'しゃっ', bonus: 1.05 },
+            charge: { name: 'ギコ溜め', desc: 'にゃー', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'ギコ！',
             feintLine: 'ギコギコ～',
@@ -356,6 +416,11 @@ const MEME_DATABASE = {
         catchphrase: 'UNREAL TOURNAMENT!!!',
         lore: 'ゲームで負けてキーボードを破壊する少年の動画。怒りの表現として世界中でネタにされ、MAD素材の定番となった。',
         signatureMove: 'キーボードスマッシュ',
+        commands: {
+            attack: { name: 'Keyboard Crash', desc: 'キーボード投擲', bonus: 1.06 },
+            feint: { name: 'Desk Flip', desc: 'ちゃぶ台返し', bonus: 1.02 },
+            charge: { name: '怒り充填', desc: '激昂準備', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'AHHHHHHH!!!',
             feintLine: 'NEIN NEIN NEIN!',
@@ -384,6 +449,11 @@ const MEME_DATABASE = {
         catchphrase: 'Nyan nyan nyan nyan~',
         lore: '8bitの猫が虹の軌跡を残しながら飛ぶ映像と、エンドレスなニャーンソング。シンプルな中毒性で世界中に拡散された。',
         signatureMove: 'レインボートレイル',
+        commands: {
+            attack: { name: '虹色軌跡', desc: 'Nyan Nyan', bonus: 1.04 },
+            feint: { name: '虹ワープ', desc: 'にゃんにゃん', bonus: 1.03 },
+            charge: { name: 'Pop-Tart溜め', desc: 'にゃーん', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'Nyan!',
             feintLine: 'Nyan nyan~',
@@ -412,6 +482,11 @@ const MEME_DATABASE = {
         catchphrase: 'ワロタwwwwwww',
         lore: '「笑った」を短縮した2ch用語。草（w）とともに笑いを表現する基本形として定着。バリエーション無限。',
         signatureMove: '草生やし',
+        commands: {
+            attack: { name: 'ワロタ連鎖', desc: 'ワロタwww', bonus: 1.03 },
+            feint: { name: 'wwwでかわす', desc: 'wwww', bonus: 1.02 },
+            charge: { name: '大草原不可避', desc: 'wwwwwww', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'ワロタwww',
             feintLine: 'ワロスww',
@@ -440,6 +515,11 @@ const MEME_DATABASE = {
         catchphrase: 'Red is sus.',
         lore: '宇宙船で裏切り者を探すゲームが、「sus」という言葉とともに世界的ミームに。シンプルなキャラが無限のネタを生んだ。',
         signatureMove: 'vent kill',
+        commands: {
+            attack: { name: 'Eject Vote', desc: 'Sus攻撃', bonus: 1.05 },
+            feint: { name: 'Vent Escape', desc: '通気口逃げ', bonus: 1.06 },
+            charge: { name: 'Emergency会議', desc: 'タスク偽装', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'sus!',
             feintLine: 'I saw you vent!',
@@ -468,6 +548,11 @@ const MEME_DATABASE = {
         catchphrase: 'feels good man',
         lore: 'カエルの感情表現ミームとして無数のバリエーションを生んだ。悲しみから喜びまで、あらゆる感情を代弁する存在。',
         signatureMove: 'rare pepe',
+        commands: {
+            attack: { name: 'Feels Bad', desc: 'かなしみ攻撃', bonus: 1.03 },
+            feint: { name: 'Rare Pepe', desc: 'レア回避', bonus: 1.07 },
+            charge: { name: 'Pepe蓄積', desc: 'Feels溜め', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'reeeee!',
             feintLine: 'smug',
@@ -496,6 +581,11 @@ const MEME_DATABASE = {
         catchphrase: 'galaxy brain moment',
         lore: '段階的に拡大する脳で知性レベルを表現するミーム。最終形態は宇宙レベル。皮肉と真面目の境界を曖昧にする。',
         signatureMove: '次元上昇',
+        commands: {
+            attack: { name: 'Galaxy Brain', desc: '次元上昇', bonus: 1.04 },
+            feint: { name: 'Smooth Brain', desc: '平滑脳回避', bonus: 1.02 },
+            charge: { name: '知性充填', desc: 'Expanding', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'big brain!',
             feintLine: '200 IQ play',
@@ -524,6 +614,11 @@ const MEME_DATABASE = {
         catchphrase: 'STONKS',
         lore: '株価チャートと謎のスーツ男で投資ネタを表現。わざと間違えた「stonks」表記が特徴。ミーム経済の象徴。',
         signatureMove: '爆上げ',
+        commands: {
+            attack: { name: 'Stonks↗', desc: '急上昇', bonus: 1.08 },
+            feint: { name: 'Not Stonks↘', desc: '急降下回避', bonus: 0.98 },
+            charge: { name: '市場分析', desc: 'ボラティリティ', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'stonks!',
             feintLine: 'buy the dip',
@@ -552,6 +647,11 @@ const MEME_DATABASE = {
         catchphrase: 'ratio',
         lore: 'リプライが元ツイートよりバズること。SNS文化特有の煽りとして定着。「L」「cope」などの追撃も定番。',
         signatureMove: 'ratio combo',
+        commands: {
+            attack: { name: 'Ratio攻撃', desc: 'L + ratio', bonus: 1.06 },
+            feint: { name: 'Counter比', desc: '逆比回避', bonus: 1.03 },
+            charge: { name: '炎上準備', desc: 'ratio溜め', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'ratio',
             feintLine: 'L + ratio',
@@ -580,6 +680,11 @@ const MEME_DATABASE = {
         catchphrase: '*dramatic music*',
         lore: '振り向きと同時に流れる劇的な音楽。5秒の映像が無限のリアクション素材として使われ続ける。',
         signatureMove: 'dramatic turn',
+        commands: {
+            attack: { name: 'Dramatic Turn', desc: '劇的一撃', bonus: 1.04 },
+            feint: { name: 'Dramatic Dodge', desc: '*gasp*', bonus: 1.03 },
+            charge: { name: 'Suspense溜め', desc: '*suspense*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*dramatic sound*',
             feintLine: '*gasp*',
@@ -608,6 +713,11 @@ const MEME_DATABASE = {
         catchphrase: '七色のニコニコ動画～♪',
         lore: 'ニコニコ動画の人気曲をメドレーにした文化現象。初音ミクから東方まで、ネット文化の総決算として君臨した。',
         signatureMove: 'メドレーアタック',
+        commands: {
+            attack: { name: 'メドレー突撃', desc: '次いくよー', bonus: 1.04 },
+            feint: { name: '間奏回避', desc: '間奏中', bonus: 1.02 },
+            charge: { name: 'イントロ溜め', desc: 'イントロ...', bonus: 1.0 }
+        },
         personality: {
             attackLine: '次いくよー',
             feintLine: '間奏中',
@@ -637,6 +747,11 @@ const MEME_DATABASE = {
         catchphrase: '＼(^o^)／オワタ',
         lore: 'マリオ改造ゲームから生まれた絶望系AA。理不尽な難易度と諦めの美学を体現し、挑戦する者を魅了した。',
         signatureMove: 'オワタ式ジャンプ',
+        commands: {
+            attack: { name: 'オワタ式ジャンプ', desc: '\(^o^)/', bonus: 1.03 },
+            feint: { name: 'オワタ？', desc: 'オワタ？', bonus: 1.02 },
+            charge: { name: 'オワ...', desc: 'オワ...', bonus: 1.0 }
+        },
         personality: {
             attackLine: '＼(^o^)／',
             feintLine: 'オワタ？',
@@ -665,6 +780,11 @@ const MEME_DATABASE = {
         catchphrase: '*points finger*',
         lore: '女性が指をさして叫ぶ画像と、混乱した猫の組み合わせ。無限のキャプション素材として世界中で使われる。',
         signatureMove: '論点ずらし',
+        commands: {
+            attack: { name: '指さし論破', desc: '*points*', bonus: 1.04 },
+            feint: { name: '困惑回避', desc: '*gasp*', bonus: 1.03 },
+            charge: { name: '論点準備', desc: '*準備中*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*指さし*',
             feintLine: '*困惑*',
@@ -693,6 +813,11 @@ const MEME_DATABASE = {
         catchphrase: '*coffin dance music*',
         lore: 'ガーナの葬式で棺を担いで踊る映像。失敗シーンの締めBGMとして世界的に流行し、あらゆる場面で使われた。',
         signatureMove: '葬送ダンス',
+        commands: {
+            attack: { name: '葬送ダンス', desc: '*dance*', bonus: 1.05 },
+            feint: { name: 'Dodge', desc: '*dodge*', bonus: 1.02 },
+            charge: { name: '葬送準備', desc: '*準備*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*dance*',
             feintLine: '*dodge*',
@@ -721,6 +846,11 @@ const MEME_DATABASE = {
         catchphrase: 'I know that feel',
         lore: 'シンプルな悲しい顔のAAから、無数のバリエーションを生んだ感情表現ミーム。喜怒哀楽すべてを表現する。',
         signatureMove: 'feels attack',
+        commands: {
+            attack: { name: 'Feels Bad', desc: 'feels bad', bonus: 1.02 },
+            feint: { name: 'tfw回避', desc: 'tfw', bonus: 1.03 },
+            charge: { name: 'That feel...', desc: 'that feel when', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'feels bad',
             feintLine: 'tfw',
@@ -749,6 +879,11 @@ const MEME_DATABASE = {
         catchphrase: '*fist pump*',
         lore: 'ビーチで砂を握りしめてガッツポーズする赤ちゃん。成功体験や小さな勝利を祝う定番ミームとして定着。',
         signatureMove: 'ガッツポーズ',
+        commands: {
+            attack: { name: 'ガッツポーズ', desc: 'yes!', bonus: 1.03 },
+            feint: { name: 'Nailed it', desc: 'nailed it', bonus: 1.02 },
+            charge: { name: 'Gonna do it', desc: 'gonna do it', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'yes!',
             feintLine: 'nailed it',
@@ -777,6 +912,11 @@ const MEME_DATABASE = {
         catchphrase: '*looks away*',
         lore: '彼女がいるのに他の女性を見る男性の写真。選択と誘惑のメタファーとして、あらゆる比較ネタで使われる。',
         signatureMove: '二股攻撃',
+        commands: {
+            attack: { name: '二股攻撃', desc: '*glance*', bonus: 1.03 },
+            feint: { name: 'Look away', desc: '*look away*', bonus: 1.04 },
+            charge: { name: '葛藤溜め', desc: '*torn*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*glance*',
             feintLine: '*look away*',
@@ -805,6 +945,11 @@ const MEME_DATABASE = {
         catchphrase: 'Do you know the way?',
         lore: 'VRChatでハリネズミキャラが集団行動するミーム。独特の口調と行動パターンで一世を風靡した。',
         signatureMove: 'クリック音連打',
+        commands: {
+            attack: { name: 'Click連打', desc: 'click click', bonus: 1.04 },
+            feint: { name: 'Spit回避', desc: 'spit on him', bonus: 1.02 },
+            charge: { name: 'Show da way', desc: 'show me da way', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'click click click',
             feintLine: 'spit on him',
@@ -833,6 +978,11 @@ const MEME_DATABASE = {
         catchphrase: '*NPC dialogue*',
         lore: '感情のない無表情な顔。考えない人間をNPCに例える皮肉なミームとして使われ、議論を呼んだ。',
         signatureMove: 'テンプレ応答',
+        commands: {
+            attack: { name: 'Beep boop', desc: '*beep boop*', bonus: 1.02 },
+            feint: { name: 'Scripted', desc: '*scripted*', bonus: 1.03 },
+            charge: { name: 'Loading', desc: '*loading*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*beep boop*',
             feintLine: '*scripted response*',
@@ -861,6 +1011,11 @@ const MEME_DATABASE = {
         catchphrase: 'やるお！',
         lore: '2chを代表するAA主人公。無数のスレで様々な役を演じ、最も汎用性の高いキャラとして君臨した。',
         signatureMove: 'やる夫スマッシュ',
+        commands: {
+            attack: { name: 'やる夫パンチ', desc: 'いくお！', bonus: 1.03 },
+            feint: { name: 'やる夫回避', desc: 'かわしたお', bonus: 1.02 },
+            charge: { name: 'やる夫溜め', desc: 'ためるお', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'いくお！',
             feintLine: 'かわすお！',
@@ -889,6 +1044,11 @@ const MEME_DATABASE = {
         catchphrase: 'モナー',
         lore: '2ch黎明期から存在するマスコット的存在。のまネコ騒動など、数々の事件を経験してきた生き証人。',
         signatureMove: 'モナーアタック',
+        commands: {
+            attack: { name: 'モナーアタック', desc: 'モナ！', bonus: 1.03 },
+            feint: { name: 'モナー回避', desc: 'モナー？', bonus: 1.02 },
+            charge: { name: 'モナ溜め', desc: 'モナ...', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'モナ！',
             feintLine: 'モナー？',
@@ -918,6 +1078,11 @@ const MEME_DATABASE = {
         catchphrase: '【速報】',
         lore: '2chのスレをまとめて拡散する文化。ミームの伝播速度を飛躍的に高め、ネット文化の形を変えた。',
         signatureMove: 'まとめ拡散',
+        commands: {
+            attack: { name: '【朗報】', desc: '朗報拡散', bonus: 1.03 },
+            feint: { name: '【悲報】', desc: '悲報回避', bonus: 1.02 },
+            charge: { name: '【速報】', desc: '速報準備', bonus: 1.0 }
+        },
         personality: {
             attackLine: '【朗報】',
             feintLine: '【悲報】',
@@ -946,6 +1111,11 @@ const MEME_DATABASE = {
         catchphrase: 'あのさぁ...',
         lore: '野獣先輩から派生した語録群。あらゆる場面で使える汎用性と、独特のリズムでネット全域に浸透した。',
         signatureMove: '語録返し',
+        commands: {
+            attack: { name: 'いいよ来いよ', desc: 'いいよ来いよ', bonus: 1.04 },
+            feint: { name: 'ちょっと待って', desc: 'ちょっと待って', bonus: 1.03 },
+            charge: { name: 'んっ...', desc: 'んっ...', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'いいよ、来いよ！',
             feintLine: 'ちょっと待って！',
@@ -974,6 +1144,11 @@ const MEME_DATABASE = {
         catchphrase: 'wwwwwwwwww',
         lore: '(笑)→w→草→草不可避。笑いを表現する記号が進化を遂げ、ついには草原と呼ばれるようになった。',
         signatureMove: '大草原不可避',
+        commands: {
+            attack: { name: 'wwwww', desc: 'wwwww', bonus: 1.02 },
+            feint: { name: 'www回避', desc: 'www', bonus: 1.03 },
+            charge: { name: 'w溜め', desc: 'w', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'wwwwww',
             feintLine: 'www',
@@ -1002,6 +1177,11 @@ const MEME_DATABASE = {
         catchphrase: 'Do the Harlem Shake!',
         lore: '突然のベースドロップとともに全員が踊り狂う。2013年に世界中で爆発的に流行し、無数の動画が投稿された。',
         signatureMove: 'Bass Drop',
+        commands: {
+            attack: { name: 'Bass Drop', desc: '*dance*', bonus: 1.05 },
+            feint: { name: 'Shake', desc: '*shake*', bonus: 1.03 },
+            charge: { name: 'ハーレム準備', desc: '*準備中*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*dance*',
             feintLine: '*shake*',
@@ -1030,6 +1210,11 @@ const MEME_DATABASE = {
         catchphrase: 'Problem?',
         lore: 'MSペイントで描かれた不気味な笑顔。荒らし行為やイタズラを象徴するミームとして定着した。',
         signatureMove: 'トローリング',
+        commands: {
+            attack: { name: 'U mad?', desc: 'U mad?', bonus: 1.04 },
+            feint: { name: 'Problem?', desc: 'Problem?', bonus: 1.05 },
+            charge: { name: 'Umad...', desc: 'Umad...', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'U mad?',
             feintLine: 'Problem?',
@@ -1058,6 +1243,11 @@ const MEME_DATABASE = {
         catchphrase: 'Forever alone...',
         lore: '孤独を表現するシンプルな顔。一人でいる寂しさや虚しさを象徴し、多くの共感を集めた。',
         signatureMove: '孤独の力',
+        commands: {
+            attack: { name: 'Alone...', desc: 'alone...', bonus: 1.02 },
+            feint: { name: 'Lonely回避', desc: 'lonely...', bonus: 1.03 },
+            charge: { name: 'Nobody...', desc: 'nobody...', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'alone...',
             feintLine: 'lonely...',
@@ -1086,6 +1276,11 @@ const MEME_DATABASE = {
         catchphrase: 'Y U NO...!?',
         lore: '怒った顔で「なぜ〜しないんだ！？」と問い詰める。あらゆる不満や疑問を表現できる汎用性の高さが魅力。',
         signatureMove: '問い詰め',
+        commands: {
+            attack: { name: 'Y U NO DIE?!', desc: 'Y U NO DIE?!', bonus: 1.05 },
+            feint: { name: 'Y U NO STOP?!', desc: 'Y U NO STOP?!', bonus: 1.03 },
+            charge: { name: 'Y U NO...', desc: 'Y U NO...', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'Y U NO DIE!?',
             feintLine: 'Y U NO STOP!?',
@@ -1114,6 +1309,11 @@ const MEME_DATABASE = {
         catchphrase: '*smiles nervously*',
         lore: 'ストックフォトのおじさんの無理な笑顔。辛いことがあっても笑顔でいる社会人の心情を代弁した。',
         signatureMove: '強がり',
+        commands: {
+            attack: { name: 'Smiles攻撃', desc: '*smiles*', bonus: 1.03 },
+            feint: { name: 'Nervous laugh', desc: '*nervous laugh*', bonus: 1.04 },
+            charge: { name: 'Hide pain', desc: '*hides pain*', bonus: 1.0 }
+        },
         personality: {
             attackLine: '*smiles*',
             feintLine: '*nervous laugh*',
@@ -1283,6 +1483,11 @@ const BOSS_DATABASE = {
         catchphrase: '1000スレ達成',
         lore: '数千スレを立て続け、無数の名言を生み出した伝説のスレ主。ネット世論を動かす力を持つ。',
         signatureMove: '伝説スレ乱立',
+        commands: {
+            attack: { name: 'スレ立て', desc: '次スレ立てます', bonus: 1.05 },
+            feint: { name: 'スレ保守', desc: 'スレ保守', bonus: 1.03 },
+            charge: { name: 'スレ立て準備', desc: 'スレ立て準備中', bonus: 1.0 }
+        },
         personality: {
             attackLine: '次スレ立てます',
             feintLine: 'スレ保守',
@@ -1311,6 +1516,11 @@ const BOSS_DATABASE = {
         catchphrase: '荒らすぞ〜',
         lore: '荒らしの頂点に立つ存在。IP変えてでも荒らし続ける執念と技術を持つ。',
         signatureMove: '無差別荒らし',
+        commands: {
+            attack: { name: '荒らし乱入', desc: 'ｗｗｗｗｗ', bonus: 1.08 },
+            feint: { name: 'IP変更', desc: 'IP変更', bonus: 1.04 },
+            charge: { name: '荒らし準備', desc: '荒らし準備', bonus: 1.0 }
+        },
         personality: {
             attackLine: 'ｗｗｗｗｗ',
             feintLine: 'IP変更',
@@ -1339,6 +1549,11 @@ const BOSS_DATABASE = {
         catchphrase: 'I am the meme',
         lore: 'すべてのミームの起源にして終着点。文化の伝播と変異を司る概念的存在。',
         signatureMove: 'ミーム創造',
+        commands: {
+            attack: { name: 'ミーム創造', desc: '進化せよ', bonus: 1.1 },
+            feint: { name: 'ミーム変異', desc: '変異せよ', bonus: 1.05 },
+            charge: { name: '創造の時', desc: '創造の時', bonus: 1.0 }
+        },
         personality: {
             attackLine: '進化せよ',
             feintLine: '変異せよ',
